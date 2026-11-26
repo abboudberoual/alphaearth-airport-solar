@@ -59,3 +59,21 @@ def run(data_dir, model_json, airports_csv, out_dir):
         meta.append(dict(airport=name, slug=slug, width_km=11.2, score_shown_from=0.5))
     json.dump(meta, open(os.path.join(out_dir, "imagery_meta.json"), "w"), indent=1)
     print("IMAGERY_META " + json.dumps(meta))
+
+
+def run_wide(data_dir, out_dir, dim=2400):
+    """Wide 16:9 views for page headers: one solar farm (operating) and one airport."""
+    os.makedirs(out_dir, exist_ok=True)
+    farms, _ = labels.load_snapshot(sorted(glob.glob(os.path.join(data_dir, "uspvdb_snapshot_*.geojson.gz")))[-1])
+    f = farms[farms.case_id == 406279].iloc[0]
+    c = f.geometry.centroid
+    def box(lon, lat, half_w_km, half_h_km):
+        import math
+        dlat = half_h_km / 110.57; dlon = half_w_km / (111.32 * math.cos(math.radians(lat)))
+        return ee.Geometry.Rectangle([lon - dlon, lat - dlat, lon + dlon, lat + dlat])
+    r = box(c.x, c.y, 8.0, 4.5)
+    save(s2_rgb(int(f.p_year) + 1, r), r, os.path.join(out_dir, "wide_solar_farm_az.jpg"), dim)
+    r = box(-77.4578886, 38.9522483, 8.0, 4.5)
+    save(s2_rgb(C.AIRPORT_YEAR, r), r, os.path.join(out_dir, "wide_airport_dulles.jpg"), dim)
+    r = box(-104.8462922, 39.5795225, 8.0, 4.5)
+    save(s2_rgb(C.AIRPORT_YEAR, r), r, os.path.join(out_dir, "wide_airport_centennial.jpg"), dim)
