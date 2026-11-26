@@ -59,7 +59,7 @@ IMG = {"fig1": "fig/fig1_label_efficiency.png", "fig3": "fig/fig3_airport_dulles
        "f_m2": "img/farm_406279_y-2.jpg", "f_m1": "img/farm_406279_y-1.jpg", "f_p1": "img/farm_406279_y+1.jpg",
        "f_emb": "img/farm_406279_emb_y-2.jpg", "nserc": "img/logos/nserc.png", "concordia": "img/logos/concordia.png",
        "colab": "img/logos/colab.png", "ee": "img/logos/earth-engine.png", "s2logo": "img/logos/sentinel2.png",
-       "usgs": "img/logos/usgs.png", "colabshot": "img/colab_cell.jpg", "s2sat": "img/sentinel2_satellite_esa.jpg"}
+       "usgs": "img/logos/usgs.png", "colabshot": "img/colab_cell.jpg", "s2sat": "img/sentinel2_satellite_esa.jpg", "hy4": "img/hy4_dlr_cc-by-3.0-de.jpg"}
 
 
 def numbers(res="results"):
@@ -93,7 +93,10 @@ def fragment(n, img):
 <p>Hydrogen emits no carbon dioxide in flight, but making it takes a lot of electricity. So I built a dataset of how electricity is produced around the 20 busiest US general-aviation airports, using the US Energy Information Administration's 2025 outlook.</p>
 <div class="marks"><img src="{img['nserc']}" alt="NSERC"><img src="{img['concordia']}" alt="Concordia University"></div>
 </div>
-</div></section>
+</div>
+<div class="wrap"><figure style="margin:64px 0 0"><img class="shot" src="{img['hy4']}" alt="A small twin-fuselage aircraft flying above an airport">
+<figcaption class="cap">HY4, an aircraft powered by a hydrogen fuel cell, over Stuttgart Airport on its first flight in 2016. Photo: DLR, Felix Oprean, <a href="https://creativecommons.org/licenses/by/3.0/de/deed.en">CC BY 3.0 DE</a>, via <a href="https://commons.wikimedia.org/wiki/File:HY4_2016-09-29_ueber_Flughafen_Stuttgart.jpg">Wikimedia Commons</a>.</figcaption></figure></div>
+</section>
 
 <section class="sec"><div class="wrap split">
 <div>
