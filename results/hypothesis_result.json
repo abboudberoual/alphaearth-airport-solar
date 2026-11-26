@@ -43,9 +43,9 @@
   "main_offset": -2,
   "check_offset": -1,
   "n_labels": 100,
-  "ae_mean_main": 0.676912,
-  "s2_mean_main": 0.625685,
-  "ae_mean_check": 0.778785,
-  "s2_mean_check": 0.751569
+  "ae_mean_main": 0.6769120072427036,
+  "s2_mean_main": 0.6256853937272908,
+  "ae_mean_check": 0.7787848779778623,
+  "s2_mean_check": 0.75156905941342
  }
 }

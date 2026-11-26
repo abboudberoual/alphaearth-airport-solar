@@ -27,6 +27,7 @@ airports, the pre-registered high-confidence threshold flags almost no land. All
 | `notebooks/reproduce.ipynb` | Runs everything top to bottom in Google Colab |
 | `results/` | Outputs of the published run (see the note below) |
 | `docs/` | The results page (GitHub Pages) |
+| `data/` | Dated USPVDB snapshot, sample points, sampled features, and `airports_top20.csv`: |
 | `data/airports_top20.csv` | The 20 airports from my earlier hydrogen study (the busiest for general-aviation traffic; several are also large airline airports) |
 
 ## Method in plain language
@@ -58,12 +59,10 @@ airports, the pre-registered high-confidence threshold flags almost no land. All
 Open `notebooks/reproduce.ipynb` in Colab, set your Earth Engine project (free non-commercial tier is
 enough; only sample pixels are read, nothing is exported) and run all cells. It takes about an hour.
 
-**Note on `results/`.** The published run happened in Colab. The files here are the run's summary outputs.
-The per-run score table, the sampled feature tables and the USPVDB snapshot file are large and are not in
-the repo yet. The summary files were copied out of Colab by hand at 6 decimal places; `final_model.json` holds
-the model weights at 6 significant figures, and `train_meta.json` has an added `test_sets` entry with the size of
-each held-out test set. Re-running the
-notebook regenerates everything; a fresh USPVDB download can differ slightly from the 26 November snapshot.
+**What the published run produced.** `results/` holds the exact output files of the 26 November 2026 Colab
+run, including the per-run score table (`label_efficiency_runs.csv`). `data/` holds the dated USPVDB snapshot,
+the sample points and the sampled features (`points.parquet`, `emb.parquet`, `s2.parquet`), so stages 3 to 5
+can be re-run without Earth Engine sampling, and stage 2 can be re-run against the same label snapshot.
 
 ## Data credits
 AlphaEarth Foundations Satellite Embedding dataset (Google / Google DeepMind) via Google Earth Engine;

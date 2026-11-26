@@ -71,9 +71,8 @@ projection (EPSG:5070). Permanent water is excluded.
 The sections above are unchanged from the pre-registration commit. Added or found afterwards:
 1. **Analyses added after seeing results (exploratory, not pre-registered):** the formal 100-vs-1,000 test at
    one year before; the year-to-year embedding similarity ("drift") comparison; the mean score per airport.
-2. **The label snapshot file is not in `data/` yet**, contrary to the Labels line above. It was saved in the
-   Colab session of the run (26 November 2026) and is too large to copy out by the route used. Until it is
-   added, a re-run downloads a fresh snapshot.
+2. **The label snapshot and sampled data** were added to `data/` a few hours after the run, copied from the
+   Colab session that produced the results.
 3. **Implementation details not spelled out above:** positives are drawn at least 10 m inside the footprint
    where its shape allows; the 500 m rule is applied to each farm's bounding box, which is slightly stricter
    than stated; four negative candidates are drawn per farm and those on water or with no land-cover value
