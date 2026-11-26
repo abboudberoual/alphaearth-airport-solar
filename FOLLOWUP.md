@@ -43,4 +43,24 @@ Within 5 km of each airport, computed in an equal-area projection (EPSG:5070) at
 All quantities are screening-level upper bounds: they ignore grid connection, ownership, zoning and cost.
 
 ## Deviations after running
-None yet.
+1. **A, metric.** Dropping non-open negatives left the test sets about 68% solar, so average precision no
+   longer has 0.5 as its chance level (chance is about 0.68) and the pre-set reading (AP >= 0.60) cannot tell
+   anything apart. I added ROC AUC, whose chance level is 0.5 whatever the class balance, and ran the same code
+   on all negatives as a control so the two can be compared. Average precision is still reported.
+2. **B, outcome outside the band, upwards.** Average precision on 2025 farms (0.855) was 0.066 above the
+   out-of-fold value, outside the pre-set +/-0.05 band. It is reported as "did better", not "held up".
+3. **C, data sources.** NREL is now the National Laboratory of the Rockies; its API moved from developer.nrel.gov
+   to developer.nlr.gov (old domain retired 29 May 2026). PVWatts returned version 8.5.0. The FAA runway file is
+   the 28-day NASR subscription cycle linked from the FAA page on the day of the run (file name in the results).
+4. **C, Palm Beach runways not masked.** The FAA runway-end file used had no rows for PBI, so no runway band was
+   removed there and its available land is overstated. Not re-run, because of the Earth Engine quota.
+5. **B, per-point scores not saved to the repo.** The summary values were copied from the notebook output; the
+   per-point score file stayed in the Colab session. Re-running `followup.forward()` regenerates it.
+
+## Results (copied from results/followup/)
+- A: ROC AUC at 1,000 labels, AlphaEarth 0.726 and Sentinel-2 0.587 on open-land negatives (0.795 and 0.684 on
+  all negatives). Decision rule with ROC AUC: AlphaEarth at 100 labels 0.617 vs Sentinel-2 at 1,000 labels 0.587,
+  difference +0.030, 95% interval -0.005 to +0.064 ("matches").
+- B: average precision 0.855 on 217 farms that opened in 2025 (out-of-fold reference 0.789).
+- C: see results/followup/airport_supply.csv.
+

@@ -85,7 +85,57 @@ def fig_airport(res="results", img="docs/img", out="docs/fig", slug="washington-
     _save(fig, out, "fig3_airport_dulles")
 
 
+def fig_harder(res="results/followup", out="docs/fig"):
+    fig, axes = plt.subplots(1, 2, figsize=(10.2, 4.1), sharey=True)
+    for ax, tag, title in zip(axes, ("followupA_control_all_negatives", "followupA"),
+                              ("(a) Solar sites vs all nearby land", "(b) Solar sites vs nearby OPEN land only")):
+        s = pd.read_csv(os.path.join(res, f"{tag}_summary.csv"))
+        for feat, col, mk, lab in (("alphaearth", BLUE, "o", "AlphaEarth embeddings"),
+                                   ("sentinel2", ORANGE, "s", "Sentinel-2 imagery (baseline)")):
+            d = s[s.features == feat].sort_values("n_labels")
+            ax.errorbar(d.n_labels, d.auc_mean, yerr=d.auc_sd, color=col, marker=mk, ms=6, lw=2, capsize=3,
+                        label=lab, markeredgecolor="white", markeredgewidth=1)
+        ax.axhline(0.5, color=GREY, lw=1, ls=":"); ax.text(10, 0.505, "coin flip", fontsize=8.5, color=GREY, va="bottom")
+        ax.set_xscale("log"); ax.set_xticks([10, 50, 100, 500, 1000]); ax.set_xticklabels(["10", "50", "100", "500", "1,000"])
+        ax.minorticks_off(); ax.set_ylim(0.45, 0.85); ax.grid(axis="y", color="#e6eaef", lw=.8); ax.set_axisbelow(True)
+        ax.set_title(title, fontsize=10.5, loc="left", pad=10)
+        ax.set_xlabel("Number of labelled examples used for training (log scale)")
+    axes[0].set_ylabel("ROC AUC on held-out states\n(0.5 = chance, 1.0 = perfect)")
+    axes[0].legend(frameon=False, loc="upper left", fontsize=9.5)
+    fig.tight_layout(w_pad=2.5)
+    _save(fig, out, "fig4_harder_comparison")
+
+
+def fig_supply(res="results/followup", out="docs/fig"):
+    a = pd.read_csv(os.path.join(res, "airport_supply.csv")).sort_values("available_km2")
+    lab = [f"{n.replace(' International Airport','').replace(' Airport','').replace(' Municipal','')} ({i})" for n, i in zip(a.name, a.faa_id)]
+    y = range(len(a))
+    fig, axes = plt.subplots(1, 2, figsize=(10.4, 6.8), sharey=True, gridspec_kw={"width_ratios": [1.45, 1]})
+    ax = axes[0]
+    ax.barh(y, a.available_km2, color="#c9d8ee", height=.72, label="Usable open land (after masks)")
+    ax.barh(y, a.available_solarlike_km2, color=BLUE, height=.72, label="...of which the model scores as solar-like")
+    for yi, km, t in zip(y, a.available_km2, a.available_h2_t_per_day):
+        ax.text(km + .4, yi, f"{t:.0f} t H2/day", va="center", fontsize=8.6, color=INK)
+    ax.set_yticks(list(y)); ax.set_yticklabels(lab, fontsize=9)
+    ax.set_xlabel("Land within 5 km of the airport (km²)"); ax.set_xlim(0, a.available_km2.max() * 1.32)
+    ax.grid(axis="x", color="#e6eaef", lw=.8); ax.set_axisbelow(True)
+    ax.set_title("(a) Usable land and the hydrogen it could make", fontsize=10.5, loc="left", pad=34)
+    ax.legend(frameon=False, loc="lower left", bbox_to_anchor=(0, 1.0), ncol=2, fontsize=8.8, handlelength=1.2, columnspacing=1.2)
+    ax = axes[1]
+    lo, hi = a.solar_h2_kgco2_per_kg_low.iloc[0], a.solar_h2_kgco2_per_kg_high.iloc[0]
+    ax.axvspan(lo, hi, color="#f6c9a4", alpha=.7, lw=0)
+    ax.text(hi + .4, len(a) - .2, "solar-powered", ha="left", va="bottom", fontsize=9, color=INK)
+    ax.scatter(a.grid_h2_kgco2_per_kg, list(y), color="#5b6675", s=34, zorder=3, edgecolor="white", lw=.8)
+    ax.text(a.grid_h2_kgco2_per_kg.max(), len(a) - .2, "local grid", ha="right", va="bottom", fontsize=9, color=INK)
+    ax.set_xlim(0, a.grid_h2_kgco2_per_kg.max() * 1.12); ax.set_ylim(-.7, len(a) + .6)
+    ax.set_xlabel("kg CO₂ per kg of hydrogen")
+    ax.grid(axis="x", color="#e6eaef", lw=.8); ax.set_axisbelow(True)
+    ax.set_title("(b) Carbon per kg of hydrogen", fontsize=10.5, loc="left", pad=34)
+    fig.tight_layout(w_pad=1.5)
+    _save(fig, out, "fig5_airport_supply")
+
+
 if __name__ == "__main__":
     os.makedirs("docs/fig", exist_ok=True)
-    fig_label_efficiency(); fig_site_over_time(); fig_airport()
+    fig_label_efficiency(); fig_site_over_time(); fig_airport(); fig_harder(); fig_supply()
     print("figures written to docs/fig")

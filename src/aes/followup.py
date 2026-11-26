@@ -166,3 +166,47 @@ def pvwatts(airports_csv, out_csv, api_key="DEMO_KEY"):
         time.sleep(1.5)
     out = pd.DataFrame(rows); out.to_csv(out_csv, index=False)
     return out
+
+
+# ---------- C (local part): packing density, grid carbon, hydrogen ----------
+KWH_PER_KG = 55.0          # DOE PEM electrolyser system energy, 2022 status (kWh per kg H2)
+KWH_PER_KG_2026 = 51.0     # DOE 2026 target, sensitivity
+SOLAR_LCA_G_PER_KWH = (10.0, 36.0)   # NREL 2024 LCA of US utility-scale PV, g CO2e/kWh
+
+
+def packing_density(data_dir):
+    """Median MW(DC) per km² of array footprint over the facilities used in the main study."""
+    from . import labels
+    farms, _ = labels.load_snapshot(sorted(glob.glob(os.path.join(data_dir, "uspvdb_snapshot_*.geojson.gz")))[-1])
+    used = set(pd.read_parquet(os.path.join(data_dir, "points.parquet")).case_id)
+    f = farms[farms.case_id.isin(used) & (farms.p_area > 0) & farms.p_cap_dc.notna()]
+    d = f.p_cap_dc / (f.p_area / 1e6)
+    return {"median_mw_per_km2": float(d.median()), "q25": float(d.quantile(.25)), "q75": float(d.quantile(.75)), "n": int(len(d))}
+
+
+def grid_co2(xlsx, year="2025"):
+    """CO2 g/kWh from the EIA AEO2025 reference case, one value per electricity region (sheet)."""
+    out = {}
+    for reg, v in pd.read_excel(xlsx, sheet_name=None).items():
+        v.columns = [str(c) for c in v.columns]
+        row = v[(v.Category == "Emissions from the Electric Power Sector per kWh") & (v.Description == "Carbon Dioxide")]
+        out[reg] = float(row[year].iloc[0])
+    return out
+
+
+def supply_table(areas_csv, pv_csv, data_dir, xlsx, out_csv):
+    a = pd.read_csv(areas_csv).merge(pd.read_csv(pv_csv), on="faa_id")
+    dens = packing_density(data_dir); g = grid_co2(xlsx)
+    for land in ("available", "available_solarlike"):
+        a[f"{land}_mw"] = a[f"{land}_km2"] * dens["median_mw_per_km2"]
+        a[f"{land}_gwh_year"] = a[f"{land}_mw"] * a.kwh_per_kw_year / 1e3
+        a[f"{land}_h2_t_per_day"] = a[f"{land}_gwh_year"] * 1e6 / KWH_PER_KG / 365 / 1e3
+        a[f"{land}_h2_t_per_day_2026"] = a[f"{land}_gwh_year"] * 1e6 / KWH_PER_KG_2026 / 365 / 1e3
+    a["h2_t_per_day_per_km2"] = dens["median_mw_per_km2"] * a.kwh_per_kw_year * 1e3 / KWH_PER_KG / 365 / 1e3
+    a["grid_co2_g_per_kwh"] = a.emm_region.map(g)
+    a["grid_h2_kgco2_per_kg"] = a.grid_co2_g_per_kwh * KWH_PER_KG / 1e3
+    a["solar_h2_kgco2_per_kg_low"] = SOLAR_LCA_G_PER_KWH[0] * KWH_PER_KG / 1e3
+    a["solar_h2_kgco2_per_kg_high"] = SOLAR_LCA_G_PER_KWH[1] * KWH_PER_KG / 1e3
+    a = a.sort_values("available_h2_t_per_day", ascending=False)
+    a.to_csv(out_csv, index=False)
+    return a, dens, g

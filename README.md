@@ -19,6 +19,13 @@ hypothesis fails (0.779 against 0.817). Scores are much higher one year before t
 both kinds of feature, which suggests site preparation is often already visible a year ahead. Near the 20
 airports, the pre-registered high-confidence threshold flags almost no land. All numbers are in `results/`.
 
+## Follow-up (pre-registered in [FOLLOWUP.md](FOLLOWUP.md))
+- **Harder comparison:** against open land only, AlphaEarth keeps a ROC AUC of 0.73 at 1,000 labels; Sentinel-2 falls to 0.59.
+- **Forward check:** on 217 farms that opened in 2025, the final model scored an average precision of 0.85 (0.79 in cross-validation).
+- **Airport supply:** after masking unusable land, the 20 airports have 3.4-24.9 km² of usable open land each
+  (187 km² in total), worth about 5-7 t of hydrogen a day per km² of solar (upper bound). Solar hydrogen would
+  emit 0.55-1.98 kg CO2e per kg, against 6.4-26.9 kg for grid-powered electrolysis at these airports.
+
 ## What is here
 | Path | What it is |
 |---|---|

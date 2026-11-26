@@ -59,7 +59,7 @@ IMG = {"fig1": "fig/fig1_label_efficiency.png", "fig3": "fig/fig3_airport_dulles
        "f_m2": "img/farm_406279_y-2.jpg", "f_m1": "img/farm_406279_y-1.jpg", "f_p1": "img/farm_406279_y+1.jpg",
        "f_emb": "img/farm_406279_emb_y-2.jpg", "nserc": "img/logos/nserc.png", "concordia": "img/logos/concordia.png",
        "colab": "img/logos/colab.png", "ee": "img/logos/earth-engine.png", "s2logo": "img/logos/sentinel2.png",
-       "usgs": "img/logos/usgs.png", "colabshot": "img/colab_cell.jpg", "s2sat": "img/sentinel2_satellite_esa.jpg", "hy4": "img/hy4_dlr_cc-by-3.0-de.jpg"}
+       "usgs": "img/logos/usgs.png", "colabshot": "img/colab_cell.jpg", "s2sat": "img/sentinel2_satellite_esa.jpg", "hy4": "img/hy4_dlr_cc-by-3.0-de.jpg", "fig4": "fig/fig4_harder_comparison.png", "fig5": "fig/fig5_airport_supply.png"}
 
 
 def numbers(res="results"):
@@ -69,7 +69,26 @@ def numbers(res="results"):
     hr, fm, rep = J("hypothesis_result.json"), J("final_model.json"), J("stage2_report.json")
     h, c = hr["hypothesis"], hr["hypothesis_one_year_before"]
     ap = pd.read_csv(os.path.join(res, "airports.csv")); top = ap.sort_values("solar_like_km2").iloc[-1]
-    return dict(
+    fa = J("followup/followupA_result.json"); fc = J("followup/followupA_control_all_negatives_result.json")
+    sa = pd.read_csv(os.path.join(res, "followup/followupA_summary.csv")); sc = pd.read_csv(os.path.join(res, "followup/followupA_control_all_negatives_summary.csv"))
+    au = lambda d, f: float(d[(d.features == f) & (d.n_labels == 1000)].auc_mean.iloc[0])
+    fb = J("followup/followupB_result.json")
+    sup = pd.read_csv(os.path.join(res, "followup/airport_supply.csv"))
+    ratio_lo = sup.grid_h2_kgco2_per_kg.min() / sup.solar_h2_kgco2_per_kg_high.iloc[0]
+    ratio_hi = sup.grid_h2_kgco2_per_kg.max() / sup.solar_h2_kgco2_per_kg_low.iloc[0]
+    extra = dict(
+        a_ae_all=f"{au(sc, 'alphaearth'):.2f}", a_s2_all=f"{au(sc, 'sentinel2'):.2f}",
+        a_ae_open=f"{au(sa, 'alphaearth'):.2f}", a_s2_open=f"{au(sa, 'sentinel2'):.2f}",
+        b_farms=f"{fb['n_farms']:,}", b_ap=f"{fb['ap_2025']:.2f}", b_ref=f"{fb['oof_ap_reference']:.2f}",
+        land_total=f"{sup.available_km2.sum():.0f}", land_min=f"{sup.available_km2.min():.1f}", land_max=f"{sup.available_km2.max():.1f}",
+        h2_km2_lo=f"{sup.h2_t_per_day_per_km2.min():.0f}", h2_km2_hi=f"{sup.h2_t_per_day_per_km2.max():.0f}",
+        h2_min=f"{sup.available_h2_t_per_day.min():.0f}", h2_max=f"{sup.available_h2_t_per_day.max():.0f}",
+        h2sl_min=f"{sup.available_solarlike_h2_t_per_day.min():.0f}", h2sl_max=f"{sup.available_solarlike_h2_t_per_day.max():.0f}",
+        grid_lo=f"{sup.grid_h2_kgco2_per_kg.min():.1f}", grid_hi=f"{sup.grid_h2_kgco2_per_kg.max():.1f}",
+        sol_lo=f"{sup.solar_h2_kgco2_per_kg_low.iloc[0]:.2f}", sol_hi=f"{sup.solar_h2_kgco2_per_kg_high.iloc[0]:.2f}",
+        ratio_lo=f"{ratio_lo:.0f}", ratio_hi=f"{ratio_hi:.0f}",
+        dens=f"{J('followup/supply_constants.json')['packing_density']['median_mw_per_km2']:.0f}")
+    return dict(**extra,
         n_farms=f"{rep['n_farms']:,}", n_px=f"{rep['n_pos'] + rep['n_neg']:,}",
         ae100=f"{h['ae_mean']:.2f}", s21000=f"{h['s2_mean']:.2f}", diff=f"{h['diff_mean']:+.3f}",
         lo=f"{h['diff_ci95'][0]:+.3f}", hi=f"{h['diff_ci95'][1]:+.3f}",
@@ -161,12 +180,37 @@ def fragment(n, img):
 </div>
 </div></section>
 
+<section class="sec"><div class="wrap">
+<p class="kick">Two harder tests</p>
+<h2>Does it know more than "open ground", and does it work on future farms?</h2>
+<div class="split" style="align-items:flex-start;margin-top:8px">
+<div><p><b>Against open land only.</b> I removed forests, towns and water from the comparison, leaving fields, grassland and bare ground. AlphaEarth still separated future solar sites ({n['a_ae_open']}, where 0.5 is chance); ordinary imagery fell to {n['a_s2_open']}.</p></div>
+<div><p><b>On farms it never saw.</b> On {n['b_farms']} solar farms that opened in 2025, the finished model scored {n['b_ap']}, better than in testing ({n['b_ref']}).</p></div>
+</div>
+<img class="shot" style="margin-top:26px;box-shadow:none;border:1px solid #e3e7ee" src="{img['fig4']}" alt="Line charts comparing AlphaEarth and Sentinel-2 against all land and against open land only">
+<p class="cap">Score (ROC AUC: 0.5 is chance, 1.0 is perfect) against the number of training examples. Right: the same test with only open land as the comparison.</p>
+</div></section>
+
+<section class="sec"><div class="wrap">
+<p class="kick">What the land could supply</p>
+<h2>Enough land for tens of tonnes of clean hydrogen a day, on paper</h2>
+<p>I removed land that cannot be used (buildings, roads, water, forest, slopes over 5&deg;, existing solar farms and a 500 m band around runways), then converted what was left into solar power and hydrogen.</p>
+<div class="finds">
+<div><b>{n['land_total']} km&sup2;</b><p>of usable open land within 5 km of the {n['n_air']} airports ({n['land_min']} to {n['land_max']} km&sup2; each).</p></div>
+<div><b>{n['h2_km2_lo']}&ndash;{n['h2_km2_hi']} t</b><p>of hydrogen a day per km&sup2; of solar, depending on how sunny the airport is.</p></div>
+<div><b>{n['ratio_lo']}&ndash;{n['ratio_hi']}&times;</b><p>less CO&#8322; per kg than hydrogen made from the local grid ({n['sol_lo']}&ndash;{n['sol_hi']} kg against {n['grid_lo']}&ndash;{n['grid_hi']} kg).</p></div>
+</div>
+<img class="shot" style="margin-top:36px;box-shadow:none;border:1px solid #e3e7ee" src="{img['fig5']}" alt="Bar chart of usable land and hydrogen per airport, and dot chart of carbon per kg of hydrogen from grid versus solar">
+<p class="cap">Upper bounds: they ignore grid connection, ownership, zoning and cost. Solar output from NLR PVWatts; {n['dens']} MW per km&sup2; is the median of the {n['n_farms']} real farms; 55 kWh per kg of hydrogen is the DOE electrolyser figure; grid carbon from the EIA 2025 outlook used in my NSERC work (power plants only). Palm Beach's runways could not be masked, so its land is overstated.</p>
+</div></section>
+
 <section class="band"><div class="wrap cols">
 <div><h3>What this assumes</h3><ol>
 <li>Good solar land shares traits a satellite can see: flat, open, unshaded.</li>
 <li>Where farms were built before is a fair guide to where they could be built.</li>
 <li>Two years before opening, the land still looks as it did when chosen.</li>
 <li>Land within 5 km is close enough to supply the airport.</li>
+<li>Solar farms near airports pack as densely as the median US farm.</li>
 </ol></div>
 <div><h3>What it cannot see</h3><ul>
 <li>Power lines, zoning, ownership and price.</li>
@@ -179,10 +223,10 @@ def fragment(n, img):
 <p class="kick">Next steps</p>
 <h2>Making the map useful</h2>
 <div class="next">
-<div><span>1</span><b>Mask what is off limits</b><p>Runways, buildings, water and existing solar farms.</p></div>
-<div><span>2</span><b>Add what satellites miss</b><p>Power lines, slope and protected areas.</p></div>
+<div><span>1</span><b>Add the grid</b><p>Distance to power lines and substations.</p></div>
+<div><span>2</span><b>Add the rules</b><p>Protected land, wetlands and airport safety zones.</p></div>
 <div><span>3</span><b>Cover every airport</b><p>All US general-aviation airports, not {n['n_air']}.</p></div>
-<div><span>4</span><b>Turn land into fuel</b><p>Megawatts of solar, then kilograms of hydrogen.</p></div>
+<div><span>4</span><b>Match supply to demand</b><p>Compare with what hydrogen aircraft at each airport would need.</p></div>
 </div>
 </div></section>
 

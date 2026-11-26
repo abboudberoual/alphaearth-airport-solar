@@ -134,12 +134,37 @@ footer{padding:64px 0 80px;font-size:14.5px;color:#56616f}footer p{max-width:60e
 </div>
 </div></section>
 
+<section class="sec"><div class="wrap">
+<p class="kick">Two harder tests</p>
+<h2>Does it know more than "open ground", and does it work on future farms?</h2>
+<div class="split" style="align-items:flex-start;margin-top:8px">
+<div><p><b>Against open land only.</b> I removed forests, towns and water from the comparison, leaving fields, grassland and bare ground. AlphaEarth still separated future solar sites (0.73, where 0.5 is chance); ordinary imagery fell to 0.59.</p></div>
+<div><p><b>On farms it never saw.</b> On 217 solar farms that opened in 2025, the finished model scored 0.85, better than in testing (0.79).</p></div>
+</div>
+<img class="shot" style="margin-top:26px;box-shadow:none;border:1px solid #e3e7ee" src="fig/fig4_harder_comparison.png" alt="Line charts comparing AlphaEarth and Sentinel-2 against all land and against open land only">
+<p class="cap">Score (ROC AUC: 0.5 is chance, 1.0 is perfect) against the number of training examples. Right: the same test with only open land as the comparison.</p>
+</div></section>
+
+<section class="sec"><div class="wrap">
+<p class="kick">What the land could supply</p>
+<h2>Enough land for tens of tonnes of clean hydrogen a day, on paper</h2>
+<p>I removed land that cannot be used (buildings, roads, water, forest, slopes over 5&deg;, existing solar farms and a 500 m band around runways), then converted what was left into solar power and hydrogen.</p>
+<div class="finds">
+<div><b>187 km&sup2;</b><p>of usable open land within 5 km of the 20 airports (3.4 to 24.9 km&sup2; each).</p></div>
+<div><b>5&ndash;7 t</b><p>of hydrogen a day per km&sup2; of solar, depending on how sunny the airport is.</p></div>
+<div><b>3&ndash;49&times;</b><p>less CO&#8322; per kg than hydrogen made from the local grid (0.55&ndash;1.98 kg against 6.4&ndash;26.9 kg).</p></div>
+</div>
+<img class="shot" style="margin-top:36px;box-shadow:none;border:1px solid #e3e7ee" src="fig/fig5_airport_supply.png" alt="Bar chart of usable land and hydrogen per airport, and dot chart of carbon per kg of hydrogen from grid versus solar">
+<p class="cap">Upper bounds: they ignore grid connection, ownership, zoning and cost. Solar output from NLR PVWatts; 68 MW per km&sup2; is the median of the 3,472 real farms; 55 kWh per kg of hydrogen is the DOE electrolyser figure; grid carbon from the EIA 2025 outlook used in my NSERC work (power plants only). Palm Beach's runways could not be masked, so its land is overstated.</p>
+</div></section>
+
 <section class="band"><div class="wrap cols">
 <div><h3>What this assumes</h3><ol>
 <li>Good solar land shares traits a satellite can see: flat, open, unshaded.</li>
 <li>Where farms were built before is a fair guide to where they could be built.</li>
 <li>Two years before opening, the land still looks as it did when chosen.</li>
 <li>Land within 5 km is close enough to supply the airport.</li>
+<li>Solar farms near airports pack as densely as the median US farm.</li>
 </ol></div>
 <div><h3>What it cannot see</h3><ul>
 <li>Power lines, zoning, ownership and price.</li>
@@ -152,10 +177,10 @@ footer{padding:64px 0 80px;font-size:14.5px;color:#56616f}footer p{max-width:60e
 <p class="kick">Next steps</p>
 <h2>Making the map useful</h2>
 <div class="next">
-<div><span>1</span><b>Mask what is off limits</b><p>Runways, buildings, water and existing solar farms.</p></div>
-<div><span>2</span><b>Add what satellites miss</b><p>Power lines, slope and protected areas.</p></div>
+<div><span>1</span><b>Add the grid</b><p>Distance to power lines and substations.</p></div>
+<div><span>2</span><b>Add the rules</b><p>Protected land, wetlands and airport safety zones.</p></div>
 <div><span>3</span><b>Cover every airport</b><p>All US general-aviation airports, not 20.</p></div>
-<div><span>4</span><b>Turn land into fuel</b><p>Megawatts of solar, then kilograms of hydrogen.</p></div>
+<div><span>4</span><b>Match supply to demand</b><p>Compare with what hydrogen aircraft at each airport would need.</p></div>
 </div>
 </div></section>
 
