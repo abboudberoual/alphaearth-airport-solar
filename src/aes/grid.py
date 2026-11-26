@@ -41,8 +41,11 @@ def grid_areas(airports_csv, model_json, data_dir, runways_csv, lines_geojson, o
     ap = pd.read_csv(airports_csv); m = json.load(open(model_json))
     rl = F.runway_lines(pd.read_csv(runways_csv, low_memory=False), ap.faa_id.tolist())
     farms, _ = labels.load_snapshot(sorted(glob.glob(os.path.join(data_dir, "uspvdb_snapshot_*.geojson.gz")))[-1])
+    import geopandas as gpd
+    from shapely.geometry import box as sbox, Point
     lines = json.load(open(lines_geojson))["features"]
     lines = [f for f in lines if str(f["properties"].get("STATUS", "")).upper() == "IN SERVICE" and f.get("geometry")]
+    lg = gpd.GeoDataFrame.from_features(lines, crs=4326); lg["i"] = range(len(lg)); lg_m = lg.to_crs(C.EQUAL_AREA_CRS)
     wc = ee.ImageCollection(C.WORLDCOVER_ID).first().select("Map")
     openland = wc.remap(F.OPEN_LAND, [1] * len(F.OPEN_LAND), 0).eq(1)
     slope = ee.Terrain.slope(ee.Image("USGS/3DEP/10m"))
@@ -51,7 +54,8 @@ def grid_areas(airports_csv, model_json, data_dir, runways_csv, lines_geojson, o
     for _, r in ap.iterrows():
         x0, y0, x1, y1 = bbox(r.lon, r.lat)
         box = ee.Geometry.Rectangle([x0, y0, x1, y1])
-        near = [f for f in lines if _intersects(f["geometry"], (x0, y0, x1, y1))]
+        idx = lg[lg.intersects(sbox(x0, y0, x1, y1))].i.tolist()
+        near = [lines[i] for i in idx]
         lfc = ee.FeatureCollection([ee.Feature(ee.Geometry(f["geometry"])) for f in near]) if near else None
         dist = lfc.distance(searchRadius=20000, maxError=10) if near else ee.Image.constant(1e9)
         circ = ee.Geometry.Point([float(r.lon), float(r.lat)]).buffer(C.AIRPORT_RADIUS_M)
@@ -72,7 +76,8 @@ def grid_areas(airports_csv, model_json, data_dir, runways_csv, lines_geojson, o
             except Exception:
                 if t == 4: raise
                 time.sleep(10 * (t + 1))
-        kv5 = [f["properties"].get("VOLTAGE") for f in near if _near_point(f["geometry"], r.lon, r.lat, 5.0)]
+        pt_m = gpd.GeoSeries([Point(float(r.lon), float(r.lat))], crs=4326).to_crs(C.EQUAL_AREA_CRS).iloc[0]
+        kv5 = lg_m[lg_m.distance(pt_m) <= 5000].VOLTAGE.tolist()
         kv5 = [x for x in kv5 if x is not None and x > 0]
         rows.append(dict(faa_id=r.faa_id, lines_in_box=len(near), available_km2_check=(v.get("avail") or 0) / 1e6,
                          grid1_km2=(v.get("grid1") or 0) / 1e6, grid2_km2=(v.get("grid2") or 0) / 1e6, grid5_km2=(v.get("grid5") or 0) / 1e6,
