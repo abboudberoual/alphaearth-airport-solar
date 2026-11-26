@@ -35,10 +35,11 @@ def fetch_lines(airports_csv, out_geojson):
     return gj
 
 
-def grid_areas(airports_csv, model_json, data_dir, runways_csv, lines_geojson, out_csv, overlay_dir, scale=10):
+def grid_areas(airports_csv, model_json, data_dir, runways_csv, lines_geojson, out_csv, overlay_dir, scale=10, only=None):
     import ee
     from . import airports as A, labels, followup as F
     ap = pd.read_csv(airports_csv); m = json.load(open(model_json))
+    if only: ap = ap[ap.faa_id.isin(only)]
     rl = F.runway_lines(pd.read_csv(runways_csv, low_memory=False), ap.faa_id.tolist())
     farms, _ = labels.load_snapshot(sorted(glob.glob(os.path.join(data_dir, "uspvdb_snapshot_*.geojson.gz")))[-1])
     import geopandas as gpd
@@ -70,18 +71,18 @@ def grid_areas(airports_csv, model_json, data_dir, runways_csv, lines_geojson, o
             bands[f"grid{km}"] = avail.And(dist.lte(km * 1000))
         kw = dict(geometry=circ, scale=scale, crs=C.EQUAL_AREA_CRS, maxPixels=1e9)
         req = ee.Dictionary({k: area.updateMask(v).reduceRegion(ee.Reducer.sum(), **kw).get("area") for k, v in bands.items()})
-        req = req.set("airport_to_line_m", dist.reduceRegion(ee.Reducer.first(), geometry=ee.Geometry.Point([float(r.lon), float(r.lat)]), scale=10).get("distance") if near else None)
         for t in range(5):
             try: v = req.getInfo(); break
             except Exception:
                 if t == 4: raise
                 time.sleep(10 * (t + 1))
         pt_m = gpd.GeoSeries([Point(float(r.lon), float(r.lat))], crs=4326).to_crs(C.EQUAL_AREA_CRS).iloc[0]
+        dm = lg_m[lg_m.i.isin(idx)].distance(pt_m)
         kv5 = lg_m[lg_m.distance(pt_m) <= 5000].VOLTAGE.tolist()
         kv5 = [x for x in kv5 if x is not None and x > 0]
         rows.append(dict(faa_id=r.faa_id, lines_in_box=len(near), available_km2_check=(v.get("avail") or 0) / 1e6,
                          grid1_km2=(v.get("grid1") or 0) / 1e6, grid2_km2=(v.get("grid2") or 0) / 1e6, grid5_km2=(v.get("grid5") or 0) / 1e6,
-                         airport_to_line_km=(v["airport_to_line_m"] / 1000) if v.get("airport_to_line_m") is not None else None,
+                         airport_to_line_km=float(dm.min() / 1000) if len(dm) else None,
                          max_kv_within_5km=max(kv5) if kv5 else None))
         print(r.faa_id, rows[-1], flush=True)
         # overlays: transparent PNGs over the 12 km box, for the interactive map
