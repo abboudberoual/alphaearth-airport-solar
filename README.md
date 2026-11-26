@@ -1,6 +1,6 @@
 # Solar-like land near airports: a label-efficiency test of AlphaEarth embeddings
 
-**Results page:** https://abboudberoual.github.io/alphaearth-airport-solar/docs/
+**Results page:** https://abboudberoual.github.io/alphaearth-airport-solar/
 
 Can Google's AlphaEarth satellite embeddings find land near airports that resembles land where US solar
 farms were later built, using only a handful of labelled examples? This is an independent student project
