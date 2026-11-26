@@ -1,17 +1,17 @@
 """Follow-up analyses A-C, as fixed in FOLLOWUP.md."""
 import glob, io, json, os, re, time, zipfile
 import numpy as np, pandas as pd, requests
-from sklearn.metrics import average_precision_score, f1_score
+from sklearn.metrics import average_precision_score, f1_score, roc_auc_score
 from . import config as C, train
 
 OPEN_LAND = [20, 30, 40, 60]          # WorldCover shrubland, grassland, cropland, bare/sparse
 
 
 # ---------- A. harder comparison (no Earth Engine) ----------
-def harder(data_dir, out_dir, offset=-2):
+def harder(data_dir, out_dir, offset=-2, open_only=True, tag="followupA"):
     os.makedirs(out_dir, exist_ok=True)
     df, s2_cols, _ = train.load(data_dir, offset)
-    keep = (df.label == 1) | df.worldcover.isin(OPEN_LAND)
+    keep = ((df.label == 1) | df.worldcover.isin(OPEN_LAND)) if open_only else (df.label >= 0)
     dropped = int((~keep).sum()); df = df[keep].reset_index(drop=True)
     fold_of = train.assign_folds(df); df["fold"] = df.p_state.map(fold_of)
     feats = {"alphaearth": C.EMB_BANDS, "sentinel2": s2_cols}
@@ -26,14 +26,19 @@ def harder(data_dir, out_dir, offset=-2):
                     m = train.models(seed)["logreg"].fit(df.loc[idx, cols].values, ytr)
                     p = m.predict_proba(te[cols].values)[:, 1]
                     rows.append(dict(offset=offset, features=f, model="logreg", n_labels=n, fold=k, seed=seed,
-                                     ap=average_precision_score(yte, p), f1=f1_score(yte, p >= 0.5),
+                                     ap=average_precision_score(yte, p), auc=roc_auc_score(yte, p), f1=f1_score(yte, p >= 0.5),
                                      n_test=len(yte), test_pos_share=float(yte.mean())))
-    res = pd.DataFrame(rows); res.to_csv(os.path.join(out_dir, "followupA_runs.csv"), index=False)
-    summ = train.summarise(res); summ.to_csv(os.path.join(out_dir, "followupA_summary.csv"), index=False)
+    res = pd.DataFrame(rows); res.to_csv(os.path.join(out_dir, f"{tag}_runs.csv"), index=False)
+    summ = train.summarise(res)
+    ps = res.groupby(["offset", "features", "model", "n_labels", "seed"]).auc.mean().reset_index()
+    a = ps.groupby(["offset", "features", "model", "n_labels"]).auc.agg(["mean", "std"]).reset_index()
+    summ["auc_mean"], summ["auc_sd"] = a["mean"].values, a["std"].values
+    summ.to_csv(os.path.join(out_dir, f"{tag}_summary.csv"), index=False)
     hyp = train.hypothesis_test(res, offset=offset)
     meta = {"negatives_dropped": dropped, "n_pos": int((df.label == 1).sum()), "n_neg": int((df.label == 0).sum()),
-            "open_land_classes": OPEN_LAND, "hypothesis": hyp}
-    json.dump(meta, open(os.path.join(out_dir, "followupA_result.json"), "w"), indent=1)
+            "test_positive_share": float(df.label.mean()), "open_land_classes": OPEN_LAND if open_only else None,
+            "hypothesis": hyp}
+    json.dump(meta, open(os.path.join(out_dir, f"{tag}_result.json"), "w"), indent=1)
     return summ, meta
 
 
@@ -154,7 +159,7 @@ def pvwatts(airports_csv, out_csv, api_key="DEMO_KEY"):
     for _, r in ap.iterrows():
         q = dict(api_key=api_key, lat=r.lat, lon=r.lon, system_capacity=1, module_type=0, losses=14,
                  array_type=2, tilt=0, azimuth=180, timeframe="monthly")
-        j = requests.get("https://developer.nrel.gov/api/pvwatts/v8.json", params=q, timeout=60).json()
+        j = requests.get("https://developer.nlr.gov/api/pvwatts/v8.json", params=q, timeout=60).json()
         if j.get("errors"): raise RuntimeError(j["errors"])
         rows.append(dict(faa_id=r.faa_id, kwh_per_kw_year=j["outputs"]["ac_annual"],
                          capacity_factor_pct=j["outputs"]["capacity_factor"], pvwatts_version=j.get("version")))
