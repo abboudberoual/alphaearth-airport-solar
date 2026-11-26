@@ -107,15 +107,24 @@ def fig_harder(res="results/followup", out="docs/fig"):
 
 
 def fig_supply(res="results/followup", out="docs/fig"):
-    a = pd.read_csv(os.path.join(res, "airport_supply.csv")).sort_values("available_km2")
+    a = pd.read_csv(os.path.join(res, "airport_supply.csv")).sort_values("available_km2").reset_index(drop=True)
     lab = [f"{n.replace(' International Airport','').replace(' Airport','').replace(' Municipal','')} ({i})" for n, i in zip(a.name, a.faa_id)]
     y = range(len(a))
     fig, axes = plt.subplots(1, 2, figsize=(10.4, 6.8), sharey=True, gridspec_kw={"width_ratios": [1.45, 1]})
     ax = axes[0]
-    ax.barh(y, a.available_km2, color="#c9d8ee", height=.72, label="Usable open land (after masks)")
-    ax.barh(y, a.available_solarlike_km2, color=BLUE, height=.72, label="...of which the model scores as solar-like")
-    for yi, km, t in zip(y, a.available_km2, a.available_h2_t_per_day):
-        ax.text(km + .4, yi, f"{t:.0f} t H2/day", va="center", fontsize=8.6, color=INK)
+    gpath = os.path.join(res, "grid_areas.csv")
+    if os.path.exists(gpath):
+        a = a.merge(pd.read_csv(gpath)[["faa_id", "grid2_km2"]], on="faa_id", how="left")
+        a["grid2_h2"] = a.grid2_km2 * a.h2_t_per_day_per_km2
+        ax.barh(y, a.available_km2, color="#c9d8ee", height=.72, label="Usable open land (after masks)")
+        ax.barh(y, a.grid2_km2, color=BLUE, height=.72, label="...of which within 2 km of a power line")
+        for yi, km, t in zip(y, a.available_km2, a.grid2_h2):
+            ax.text(km + .4, yi, f"{t:.0f} t H2/day", va="center", fontsize=8.6, color=INK)
+    else:
+        ax.barh(y, a.available_km2, color="#c9d8ee", height=.72, label="Usable open land (after masks)")
+        ax.barh(y, a.available_solarlike_km2, color=BLUE, height=.72, label="...of which the model scores as solar-like")
+        for yi, km, t in zip(y, a.available_km2, a.available_h2_t_per_day):
+            ax.text(km + .4, yi, f"{t:.0f} t H2/day", va="center", fontsize=8.6, color=INK)
     ax.set_yticks(list(y)); ax.set_yticklabels(lab, fontsize=9)
     ax.set_xlabel("Land within 5 km of the airport (km²)"); ax.set_xlim(0, a.available_km2.max() * 1.32)
     ax.grid(axis="x", color="#e6eaef", lw=.8); ax.set_axisbelow(True)

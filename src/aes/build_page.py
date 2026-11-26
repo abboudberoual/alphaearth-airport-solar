@@ -74,6 +74,8 @@ def numbers(res="results"):
     au = lambda d, f: float(d[(d.features == f) & (d.n_labels == 1000)].auc_mean.iloc[0])
     fb = J("followup/followupB_result.json")
     sup = pd.read_csv(os.path.join(res, "followup/airport_supply.csv"))
+    gr = pd.read_csv(os.path.join(res, "followup/grid_areas.csv")); sg = sup.merge(gr, on="faa_id")
+    sg["g2h2"] = sg.grid2_km2 * sg.h2_t_per_day_per_km2
     ratio_lo = sup.grid_h2_kgco2_per_kg.min() / sup.solar_h2_kgco2_per_kg_high.iloc[0]
     ratio_hi = sup.grid_h2_kgco2_per_kg.max() / sup.solar_h2_kgco2_per_kg_low.iloc[0]
     extra = dict(
@@ -87,6 +89,9 @@ def numbers(res="results"):
         grid_lo=f"{sup.grid_h2_kgco2_per_kg.min():.1f}", grid_hi=f"{sup.grid_h2_kgco2_per_kg.max():.1f}",
         sol_lo=f"{sup.solar_h2_kgco2_per_kg_low.iloc[0]:.2f}", sol_hi=f"{sup.solar_h2_kgco2_per_kg_high.iloc[0]:.2f}",
         ratio_lo=f"{ratio_lo:.0f}", ratio_hi=f"{ratio_hi:.0f}",
+        grid_total=f"{sg.grid2_km2.sum():.0f}", grid_share=f"{100 * sg.grid2_km2.sum() / sg.available_km2.sum():.0f}",
+        g2h2_max=f"{sg.g2h2.max():.0f}", g2h2_top=", ".join(sg.sort_values("g2h2", ascending=False).name.head(2).str.replace(" Airport", "")),
+        grid_poor=", ".join(sg[sg.grid2_km2 < 0.5].name.str.replace(" Airport", "").str.replace(" County", "")),
         dens=f"{J('followup/supply_constants.json')['packing_density']['median_mw_per_km2']:.0f}")
     return dict(**extra,
         n_farms=f"{rep['n_farms']:,}", n_px=f"{rep['n_pos'] + rep['n_neg']:,}",
@@ -193,15 +198,15 @@ def fragment(n, img):
 
 <section class="sec"><div class="wrap">
 <p class="kick">What the land could supply</p>
-<h2>Enough land for tens of tonnes of clean hydrogen a day, on paper</h2>
-<p>I removed land that cannot be used (buildings, roads, water, forest, slopes over 5&deg;, existing solar farms and a 500 m band around runways), then converted what was left into solar power and hydrogen.</p>
+<h2>Up to {n['g2h2_max']} tonnes of clean hydrogen a day per airport, on paper</h2>
+<p>I removed land that cannot be used (buildings, roads, water, forest, slopes over 5&deg;, existing solar farms and a 500 m band around runways), kept what lies within 2 km of a transmission line, then converted it into solar power and hydrogen.</p>
 <div class="finds">
-<div><b>{n['land_total']} km&sup2;</b><p>of usable open land within 5 km of the {n['n_air']} airports ({n['land_min']} to {n['land_max']} km&sup2; each).</p></div>
+<div><b>{n['grid_total']} km&sup2;</b><p>of the {n['land_total']} km&sup2; of usable land ({n['grid_share']}%) lies within 2 km of a transmission line. {n['grid_poor']} have almost none.</p></div>
 <div><b>{n['h2_km2_lo']}&ndash;{n['h2_km2_hi']} t</b><p>of hydrogen a day per km&sup2; of solar, depending on how sunny the airport is.</p></div>
 <div><b>{n['ratio_lo']}&ndash;{n['ratio_hi']}&times;</b><p>less CO&#8322; per kg than hydrogen made from the local grid ({n['sol_lo']}&ndash;{n['sol_hi']} kg against {n['grid_lo']}&ndash;{n['grid_hi']} kg).</p></div>
 </div>
 <img class="shot" style="margin-top:36px;box-shadow:none;border:1px solid #e3e7ee" src="{img['fig5']}" alt="Bar chart of usable land and hydrogen per airport, and dot chart of carbon per kg of hydrogen from grid versus solar">
-<p class="cap">Upper bounds: they ignore grid connection, ownership, zoning and cost. Solar output from NLR PVWatts; {n['dens']} MW per km&sup2; is the median of the {n['n_farms']} real farms; 55 kWh per kg of hydrogen is the DOE electrolyser figure; grid carbon from the EIA 2025 outlook used in my NSERC work (power plants only). Palm Beach's runways could not be masked, so its land is overstated.</p>
+<p class="cap">Upper bounds: they ignore grid connection, ownership, zoning and cost. Solar output from NLR PVWatts; {n['dens']} MW per km&sup2; is the median of the {n['n_farms']} real farms; 55 kWh per kg of hydrogen is the DOE electrolyser figure; grid carbon from the EIA 2025 outlook used in my NSERC work (power plants only). Labels show hydrogen from grid-ready land. Palm Beach's runways could not be masked, so its land is overstated. Power lines: HIFLD via GeoPlatform ArcGIS Online (2023).</p>
 </div></section>
 
 <section class="band"><div class="wrap cols">
@@ -223,7 +228,7 @@ def fragment(n, img):
 <p class="kick">Next steps</p>
 <h2>Making the map useful</h2>
 <div class="next">
-<div><span>1</span><b>Add the grid</b><p>Distance to power lines and substations.</p></div>
+<div><span>1</span><b>Check grid capacity</b><p>Whether nearby lines and substations can take new solar.</p></div>
 <div><span>2</span><b>Add the rules</b><p>Protected land, wetlands and airport safety zones.</p></div>
 <div><span>3</span><b>Cover every airport</b><p>All US general-aviation airports, not {n['n_air']}.</p></div>
 <div><span>4</span><b>Match supply to demand</b><p>Compare with what hydrogen aircraft at each airport would need.</p></div>

@@ -25,6 +25,9 @@ airports, the pre-registered high-confidence threshold flags almost no land. All
 - **Airport supply:** after masking unusable land, the 20 airports have 3.4-24.9 km² of usable open land each
   (187 km² in total), worth about 5-7 t of hydrogen a day per km² of solar (upper bound). Solar hydrogen would
   emit 0.55-1.98 kg CO2e per kg, against 6.4-26.9 kg for grid-powered electrolysis at these airports.
+- **Grid access:** 125 of the 187 km² of usable land (67%) lies within 2 km of a transmission line (HIFLD, via
+  GeoPlatform ArcGIS Online). Van Nuys and Westchester have almost none. On grid-ready land the upper bound is
+  0.2-84 t of hydrogen a day per airport.
 
 ## What is here
 | Path | What it is |
