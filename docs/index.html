@@ -52,6 +52,19 @@ p{margin:0 0 14px;max-width:34em}.dim{color:#56616f;font-size:15px}
 @media (prefers-reduced-motion:reduce){.ring{animation:none}}
 .mapframe{margin-top:22px;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.06),0 24px 56px -26px rgba(16,24,40,.38);border:1px solid #e3e7ee;height:min(660px,78vh);min-height:460px;background:#e9edf2}
 .mapframe iframe{width:100%;height:100%;border:0;display:block}
+.scene{position:relative;margin-top:104px;min-height:min(80vh,760px);background-size:cover;background-position:center;display:flex;align-items:flex-end;color:#fff}
+.scene::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,14,22,0) 35%,rgba(10,14,22,.72) 100%)}
+.scene .wrap{position:relative;width:100%;box-sizing:border-box;padding-bottom:52px}
+.scene .big{font-size:clamp(24px,3.2vw,38px);font-weight:600;line-height:1.18;letter-spacing:-.015em;max-width:19em;margin:0 0 10px;text-shadow:0 2px 22px rgba(0,0,0,.4)}
+.scene small{display:block;font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.02em;opacity:.88}
+@media (min-width:900px) and (hover:hover){.scene{background-attachment:fixed}}
+.band.sat{position:relative;background-size:cover;background-position:center;color:#fff;padding:120px 0}
+.band.sat::before{content:"";position:absolute;inset:0;background:rgba(11,16,24,.8)}
+.band.sat .wrap{position:relative}.band.sat li{color:#e8edf3}
+.cap a{padding:9px 2px}footer p:first-child a{display:inline-block;padding:9px 0}.full{display:inline-block;padding:10px 0}
+@supports (min-height:100svh){.hero{min-height:100svh}}
+@media (max-width:640px){.next{border-top:0;border-left:2px dotted #aeb8c5;margin-left:18px;gap:0}.next div{padding:0 0 30px 40px}.next span{top:-6px;left:-20px}.scene{min-height:62svh;margin-top:80px}.scene .wrap{padding-bottom:36px}.sec{padding-top:80px}.band.sat{padding:84px 0}.mapframe{min-height:520px;height:72svh}}
+@media (max-width:420px){.ring{--z:130px;width:156px;height:196px}.ring>div{padding:10px;gap:8px}.ring b{font-size:15px}.ring small{font-size:12.5px}.ring img{max-width:118px;max-height:38px}.ring .txt{font-size:16px}.wheel{height:280px;perspective:1400px}}
 footer{padding:64px 0 80px;font-size:14.5px;color:#56616f}footer p{max-width:60em}
 </style>
 </head>
@@ -83,6 +96,8 @@ footer{padding:64px 0 80px;font-size:14.5px;color:#56616f}footer p{max-width:60e
 <figure style="margin:0"><img class="shot" src="img/wide_airport_dulles.jpg" alt="Satellite view of Washington Dulles airport and the land around it">
 <figcaption class="cap">Washington Dulles International Airport from space, 2025. Sentinel-2 image.</figcaption></figure>
 </div></section>
+
+<section class="scene" style="background-image:url(img/wide_boston_alphaearth.jpg);background-position:center"><div class="wrap"><p class="big">AlphaEarth turns every 10 m square of land into 64 numbers. Here are three of them, shown as colour.</p><small>Boston Logan International Airport &middot; AlphaEarth Foundations embedding, 2024, bands A01, A16, A09</small></div></section>
 
 <section class="sec"><div class="wrap">
 <p class="kick">How it works</p>
@@ -126,6 +141,8 @@ footer{padding:64px 0 80px;font-size:14.5px;color:#56616f}footer p{max-width:60e
 </div>
 </div></section>
 
+<section class="scene" style="background-image:url(img/wide_desert_sunlight_ca.jpg);background-position:60% center"><div class="wrap"><p class="big">Flat, open, unshaded: the kind of land solar farms are built on.</p><small>Desert Sunlight and Desert Harvest, California &middot; 4 solar farms, 713 MW &middot; Sentinel-2, 2025</small></div></section>
+
 <section class="sec"><div class="wrap">
 <p class="kick">What I found</p>
 <h2>It learns fast, but it is not ready to choose sites</h2>
@@ -147,6 +164,8 @@ footer{padding:64px 0 80px;font-size:14.5px;color:#56616f}footer p{max-width:60e
 <p class="cap">Score (ROC AUC: 0.5 is chance, 1.0 is perfect) against the number of training examples. Right: the same test with only open land as the comparison.</p>
 </div></section>
 
+<section class="scene" style="background-image:url(img/wide_babcock_ranch_fl.jpg);background-position:30% center"><div class="wrap"><p class="big">Solar farms are not only a desert thing.</p><small>Near Babcock Ranch, Florida &middot; 2 solar farms, 149 MW, beside wetlands &middot; Sentinel-2, 2025</small></div></section>
+
 <section class="sec"><div class="wrap">
 <p class="kick">What the land could supply</p>
 <h2>Up to 84 tonnes of clean hydrogen a day per airport, on paper</h2>
@@ -160,15 +179,17 @@ footer{padding:64px 0 80px;font-size:14.5px;color:#56616f}footer p{max-width:60e
 <p class="cap">Upper bounds: they ignore grid connection, ownership, zoning and cost. Solar output from NLR PVWatts; 68 MW per km&sup2; is the median of the 3,472 real farms; 55 kWh per kg of hydrogen is the DOE electrolyser figure; grid carbon from the EIA 2025 outlook used in my NSERC work (power plants only). Labels show hydrogen from grid-ready land. Palm Beach's runways could not be masked, so its land is overstated. Power lines: HIFLD via GeoPlatform ArcGIS Online (2023).</p>
 </div></section>
 
+<section class="scene" style="background-image:url(img/wide_boston_logan.jpg);background-position:40% center"><div class="wrap"><p class="big">Many busy airports sit between city and sea, with little open land to spare.</p><small>Boston Logan International Airport &middot; Sentinel-2, 2025</small></div></section>
+
 <section class="sec"><div class="wrap">
 <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
 <div><p class="kick">Interactive map</p><h2 style="margin-bottom:6px">Explore every airport</h2>
 <p style="margin:0">Pick an airport, then switch layers: usable land, land near the grid, the model's score, power lines and existing solar farms.</p></div>
-<a href="map.html" style="color:#1557b0;text-decoration:none;font-weight:500;white-space:nowrap">Open full screen &rarr;</a></div>
+<a class="full" href="map.html" style="color:#1557b0;text-decoration:none;font-weight:500;white-space:nowrap">Open full screen &rarr;</a></div>
 <div class="mapframe"><iframe src="map.html?embed=1" title="Interactive map of usable land, power lines and solar farms around 20 US airports" loading="lazy" allow="fullscreen"></iframe></div>
 </div></section>
 
-<section class="band"><div class="wrap cols">
+<section class="band sat" style="background-image:url(img/wide_airport_centennial.jpg)"><div class="wrap cols">
 <div><h3>What this assumes</h3><ol>
 <li>Good solar land shares traits a satellite can see: flat, open, unshaded.</li>
 <li>Where farms were built before is a fair guide to where they could be built.</li>
@@ -183,6 +204,8 @@ footer{padding:64px 0 80px;font-size:14.5px;color:#56616f}footer p{max-width:60e
 </ul></div>
 </div></section>
 
+<section class="scene" style="background-image:url(img/wide_garden_city_ks.jpg);background-position:75% center"><div class="wrap"><p class="big">Airports far from big cities have more open land around them: the next places to test.</p><small>Garden City Regional Airport, Kansas, among irrigated crop circles &middot; Sentinel-2, 2025</small></div></section>
+
 <section class="sec"><div class="wrap">
 <p class="kick">Next steps</p>
 <h2>Making the map useful</h2>
@@ -193,6 +216,8 @@ footer{padding:64px 0 80px;font-size:14.5px;color:#56616f}footer p{max-width:60e
 <div><span>4</span><b>Match supply to demand</b><p>Compare with what hydrogen aircraft at each airport would need.</p></div>
 </div>
 </div></section>
+
+<section class="scene" style="background-image:url(img/wide_green_mountains_vt_autumn.jpg);background-position:center"><div class="wrap"><p class="big">The same satellites revisit every few days, through every season.</p><small>Green Mountains, Vermont, October 2025 &middot; Sentinel-2</small></div></section>
 
 <section class="sec"><div class="wrap">
 <p class="kick">Tools and data</p>

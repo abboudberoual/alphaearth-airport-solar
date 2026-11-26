@@ -1,0 +1,42 @@
+{
+ "wide_desert_sunlight_ca": {
+  "n_farms": 4,
+  "mw_ac": 713,
+  "names": [
+   "Desert Harvest II, LLC",
+   "Desert Harvest, LLC",
+   "Desert Sunlight 250, LLC",
+   "Desert Sunlight 300, LLC"
+  ]
+ },
+ "wide_babcock_ranch_fl": {
+  "n_farms": 2,
+  "mw_ac": 149,
+  "names": [
+   "Babcock Preserve",
+   "Babcock Solar Energy Center Hybrid"
+  ]
+ },
+ "wide_boston_logan": {
+  "n_farms": 0,
+  "mw_ac": 0,
+  "names": []
+ },
+ "wide_garden_city_ks": {
+  "n_farms": 0,
+  "mw_ac": 0,
+  "names": []
+ },
+ "wide_green_mountains_vt_autumn": {
+  "n_farms": 1,
+  "mw_ac": 1,
+  "names": [
+   "VEC Magee Hill Solar"
+  ]
+ },
+ "wide_boston_alphaearth": {
+  "n_farms": 0,
+  "mw_ac": 0,
+  "names": []
+ }
+}
