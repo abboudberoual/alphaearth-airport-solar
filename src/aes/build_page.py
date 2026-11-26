@@ -49,6 +49,8 @@ p{margin:0 0 14px;max-width:34em}.dim{color:#56616f;font-size:15px}
 @keyframes spin{to{transform:rotateY(-360deg)}}
 @media (max-width:640px){.ring{--z:175px;width:190px;height:200px}.ring>div{padding:14px}.ring img{max-width:140px;max-height:44px}.ring .txt{font-size:18px}.wheel{height:300px}}
 @media (prefers-reduced-motion:reduce){.ring{animation:none}}
+.mapframe{margin-top:22px;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.06),0 24px 56px -26px rgba(16,24,40,.38);border:1px solid #e3e7ee;height:min(660px,78vh);min-height:460px;background:#e9edf2}
+.mapframe iframe{width:100%;height:100%;border:0;display:block}
 footer{padding:64px 0 80px;font-size:14.5px;color:#56616f}footer p{max-width:60em}
 """
 FONTS = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">'
@@ -209,11 +211,12 @@ def fragment(n, img):
 <p class="cap">Upper bounds: they ignore grid connection, ownership, zoning and cost. Solar output from NLR PVWatts; {n['dens']} MW per km&sup2; is the median of the {n['n_farms']} real farms; 55 kWh per kg of hydrogen is the DOE electrolyser figure; grid carbon from the EIA 2025 outlook used in my NSERC work (power plants only). Labels show hydrogen from grid-ready land. Palm Beach's runways could not be masked, so its land is overstated. Power lines: HIFLD via GeoPlatform ArcGIS Online (2023).</p>
 </div></section>
 
-<section class="sec"><div class="wrap split" style="align-items:center">
-<div><p class="kick">Interactive map</p><h2>See the land, the grid and the farms for yourself</h2>
-<p>Every airport on Google Maps satellite view, with usable land, land near the grid, the model's score, power lines and existing solar farms as layers you can switch on and off.</p>
-<p><a href="map.html" style="display:inline-block;background:#1b2430;color:#fff;text-decoration:none;padding:12px 20px;border-radius:999px;font-weight:500;margin-top:6px">Open the map &rarr;</a></p></div>
-<a href="map.html"><img class="shot" src="{img['dulles']}" alt="Satellite view of an airport, linking to the interactive map"></a>
+<section class="sec"><div class="wrap">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+<div><p class="kick">Interactive map</p><h2 style="margin-bottom:6px">Explore every airport</h2>
+<p style="margin:0">Pick an airport, then switch layers: usable land, land near the grid, the model's score, power lines and existing solar farms.</p></div>
+<a href="map.html" style="color:#1557b0;text-decoration:none;font-weight:500;white-space:nowrap">Open full screen &rarr;</a></div>
+<div class="mapframe"><iframe src="map.html?embed=1" title="Interactive map of usable land, power lines and solar farms around 20 US airports" loading="lazy" allow="fullscreen"></iframe></div>
 </div></section>
 
 <section class="band"><div class="wrap cols">

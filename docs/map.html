@@ -33,6 +33,24 @@ select{font:inherit;font-size:13px;padding:6px 8px;border:1px solid #cfd6df;bord
 .bar{height:8px;width:110px;border-radius:4px;background:linear-gradient(90deg,#fff3c4,#fdc24a,#ef7f1a,#b63a0b,#6b1203)}
 .credits{font-size:11.5px;color:#56616f;padding:8px 16px;border-top:1px solid #e3e7ee}
 .info{font-family:'IBM Plex Sans',sans-serif;font-size:13px;line-height:1.45;max-width:240px}.info b{font-size:14px}
+
+/* ---- compact embed mode ---- */
+body.embed header,body.embed aside{display:none}
+body.embed .wrap{height:100%}body.embed #map{min-height:100%;flex:1 1 100%}
+.cp{margin:10px;background:rgba(255,255,255,.96);border-radius:14px;box-shadow:0 10px 30px -14px rgba(16,24,40,.45);padding:10px;width:min(330px,calc(100vw - 20px));font-family:'IBM Plex Sans',system-ui,sans-serif}
+.cp select{width:100%;font-weight:600;font-size:14px;padding:8px 10px;border-radius:10px;border:1px solid #d5dbe3;background:#fff;color:#1b2430}
+.cp .stat{display:flex;gap:10px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#3a4553;margin:8px 2px 8px}
+.cp .stat b{color:#1b2430;font-weight:500}
+.tg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.tg button,.seg button{font:inherit;font-size:12px;border:1px solid #d5dbe3;background:#fff;color:#1b2430;border-radius:8px;min-height:32px;padding:4px 6px;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;white-space:nowrap}
+.tg button[aria-pressed="true"]{background:#1b2430;border-color:#1b2430;color:#fff}
+.seg{display:flex;margin-top:6px;border:1px solid #d5dbe3;border-radius:8px;overflow:hidden}
+.seg button{flex:1;border:0;border-radius:0;min-height:30px}.seg button+button{border-left:1px solid #d5dbe3}
+.seg button[aria-pressed="true"]{background:#eef4fd;color:#1557b0;font-weight:600}
+.seg span{font-size:11px;color:#56616f;padding:0 8px;display:flex;align-items:center;background:#f6f8fb;border-right:1px solid #d5dbe3}
+.lg{margin:0 0 22px 10px;background:rgba(255,255,255,.95);border-radius:10px;box-shadow:0 8px 24px -12px rgba(16,24,40,.4);font-size:12px;font-family:'IBM Plex Sans',sans-serif}
+.lg summary{cursor:pointer;padding:7px 11px;font-weight:600;list-style:none}.lg summary::-webkit-details-marker{display:none}
+.lg div.rows{padding:0 11px 9px}.lg div.rows div{display:flex;align-items:center;gap:7px;margin:3px 0}
 @media (max-width:760px){aside{width:100%;border-right:0;max-height:46vh}#map{min-height:54vh}}
 </style>
 </head>
@@ -78,6 +96,10 @@ select{font:inherit;font-size:13px;padding:6px 8px;border:1px solid #cfd6df;bord
   const S = { layers: { avail: true, grid: true, score: false, lines: true, farms: true, circle: true }, kv: 0, sort: "grid2_h2", current: null };
   let map, airports = [], lines = null, farms = null, overlays = {}, circles = {}, markers = {}, info;
   const $ = (q) => document.querySelector(q);
+  const EMBED = new URLSearchParams(location.search).has("embed");
+  if (EMBED) document.body.classList.add("embed");
+  const LABELS = { avail: ["Land", "#8ec5ff"], grid: ["Grid", "#1f6fd1"], score: ["Score", "#ef7f1a"], lines: ["Lines", "#e11d48"], farms: ["Farms", "#facc15"], circle: ["5 km", null] };
+  let cp = null;
   const fmt = (v, d = 1) => (v == null || isNaN(v)) ? "n/a" : Number(v).toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
 
   function readHash() {
@@ -95,7 +117,32 @@ select{font:inherit;font-size:13px;padding:6px 8px;border:1px solid #cfd6df;bord
     document.querySelectorAll("#kv .chip").forEach(b => b.setAttribute("aria-pressed", +b.dataset.kv === S.kv));
   }
 
+  function renderCompact() {
+    if (!cp) return;
+    const sel = cp.querySelector("select"), cur = sel.value;
+    if (!sel.options.length) {
+      airports.slice().sort((x, y) => (y.grid2_h2 ?? -1) - (x.grid2_h2 ?? -1)).forEach(r => {
+        const o = document.createElement("option"); o.value = r.faa_id; o.textContent = `${r.name} (${r.faa_id})`; sel.appendChild(o); });
+    }
+    if (S.current && cur !== S.current) sel.value = S.current;
+    const r = airports.find(x => x.faa_id === sel.value);
+    cp.querySelector(".stat").innerHTML = r ? `<span><b>${fmt(r.grid2_h2, 0)} t</b> H&#8322;/day</span><span><b>${fmt(r.grid2_km2)} km&sup2;</b> near grid</span><span><b>${r.airport_to_line_km == null ? "n/a" : fmt(r.airport_to_line_km)} km</b> to line</span>` : "";
+    cp.querySelectorAll(".tg button").forEach(b => b.setAttribute("aria-pressed", S.layers[b.dataset.layer]));
+    cp.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.kv === S.kv));
+  }
+  function buildCompact() {
+    cp = document.createElement("div"); cp.className = "cp";
+    cp.innerHTML = `<label class="visually-hidden" for="cpsel" style="position:absolute;left:-9999px">Airport</label><select id="cpsel"></select><div class="stat"></div>
+      <div class="tg">${Object.entries(LABELS).map(([k, [t, c]]) => `<button data-layer="${k}" aria-pressed="false">${c ? `<span class="sw" style="background:${c}"></span>` : `<span class="sw" style="border:1.5px solid currentColor"></span>`}${t}</button>`).join("")}</div>
+      <div class="seg"><span>kV</span><button data-kv="0">All</button><button data-kv="115">115+</button><button data-kv="230">230+</button></div>`;
+    cp.querySelector("select").onchange = (e) => go(e.target.value, true);
+    cp.querySelectorAll(".tg button").forEach(b => b.onclick = () => { S.layers[b.dataset.layer] = !S.layers[b.dataset.layer]; applyLayers(); renderCompact(); writeHash(); });
+    cp.querySelectorAll(".seg button").forEach(b => b.onclick = () => { S.kv = +b.dataset.kv; applyLayers(); renderCompact(); writeHash(); });
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(cp);
+    renderCompact();
+  }
   function renderList() {
+    renderCompact();
     const a = airports.slice().sort((x, y) => S.sort === "name" ? x.name.localeCompare(y.name)
       : S.sort === "airport_to_line_km" ? (x[S.sort] ?? 1e9) - (y[S.sort] ?? 1e9) : (y[S.sort] ?? -1) - (x[S.sort] ?? -1));
     $("#list").innerHTML = "";
@@ -151,9 +198,11 @@ select{font:inherit;font-size:13px;padding:6px 8px;border:1px solid #cfd6df;bord
 
   function startMap() {
     $("#note").remove();
-    const legend = $("#legend"); legend.remove(); legend.hidden = false;
-    map = new google.maps.Map($("#map"), { mapId: window.GMAPS_MAP_ID || "DEMO_MAP_ID", mapTypeId: "hybrid", center: { lat: 38, lng: -96 }, zoom: 4, streetViewControl: false, fullscreenControl: true, mapTypeControl: true, tilt: 0 });
+    let legend = $("#legend"); legend.remove(); legend.hidden = false;
+    if (EMBED) { const d = document.createElement("details"); d.className = "lg"; d.innerHTML = `<summary>Legend</summary><div class="rows">${legend.innerHTML}</div>`; legend = d; }
+    map = new google.maps.Map($("#map"), { mapId: window.GMAPS_MAP_ID || "DEMO_MAP_ID", mapTypeId: "hybrid", center: { lat: 38, lng: -96 }, zoom: 4, streetViewControl: false, fullscreenControl: true, mapTypeControl: !EMBED, tilt: 0, cameraControl: !EMBED, zoomControl: true, gestureHandling: EMBED ? "cooperative" : "greedy" });
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
+    if (EMBED) buildCompact();
     info = new google.maps.InfoWindow();
     airports.forEach(r => {
       const b = { west: r.box[0], south: r.box[1], east: r.box[2], north: r.box[3] };
@@ -173,6 +222,7 @@ select{font:inherit;font-size:13px;padding:6px 8px;border:1px solid #cfd6df;bord
       info.setPosition(e.latLng); info.open(map);
     });
     applyLayers();
+    if (!S.current && EMBED) S.current = airports.slice().sort((x, y) => (y.grid2_h2 ?? -1) - (x.grid2_h2 ?? -1))[0].faa_id;
     if (S.current) go(S.current, false);
     else { const bb = new google.maps.LatLngBounds(); airports.forEach(r => bb.extend({ lat: r.lat, lng: r.lon })); map.fitBounds(bb, 40); }
   }
