@@ -36,6 +36,19 @@ p{margin:0 0 14px;max-width:34em}.dim{color:#56616f;font-size:15px}
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:48px}
 .cols h3{font-size:20px;margin:0 0 12px;font-weight:600}.cols ul,.cols ol{margin:0;padding-left:1.15em;font-size:16.5px}.cols li{margin-bottom:8px}
 .tools{display:flex;gap:44px 56px;flex-wrap:wrap;align-items:center;margin-top:34px}.tools img{height:46px;width:auto}.tools span{font-weight:600;font-size:19px}
+.next{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:0;margin-top:44px;border-top:2px dotted #aeb8c5}
+.next div{position:relative;padding:34px 26px 0 0}.next span{position:absolute;top:-20px;left:0;width:38px;height:38px;border-radius:50%;background:#fff;border:2px solid #1b2430;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:14px}
+.next b{display:block;font-size:19px;margin-bottom:6px}.next p{font-size:16px;color:#3a4553;margin:0}
+.wheel{perspective:1500px;height:330px;display:flex;align-items:center;justify-content:center;margin-top:36px;overflow:hidden}
+.ring{position:relative;width:250px;height:220px;transform-style:preserve-3d;animation:spin 42s linear infinite}
+.ring:hover{animation-play-state:paused}
+.ring>div{position:absolute;inset:0;background:#fff;border:1px solid #e3e7ee;border-radius:16px;box-shadow:0 22px 48px -24px rgba(16,24,40,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:22px;text-align:center;backface-visibility:hidden}
+.ring>div:nth-child(1){transform:rotateY(0deg) translateZ(260px)}.ring>div:nth-child(2){transform:rotateY(60deg) translateZ(260px)}.ring>div:nth-child(3){transform:rotateY(120deg) translateZ(260px)}
+.ring>div:nth-child(4){transform:rotateY(180deg) translateZ(260px)}.ring>div:nth-child(5){transform:rotateY(240deg) translateZ(260px)}.ring>div:nth-child(6){transform:rotateY(300deg) translateZ(260px)}
+.ring img{max-height:58px;max-width:180px;width:auto}.ring b{font-size:17px}.ring small{font-size:14px;color:#56616f;line-height:1.4}.ring .txt{font-size:22px;font-weight:600;letter-spacing:-.01em}
+@keyframes spin{to{transform:rotateY(-360deg)}}
+@media (max-width:640px){.ring{transform:scale(.7)}.wheel{height:260px}}
+@media (prefers-reduced-motion:reduce){.ring{animation:none}}
 footer{padding:64px 0 80px;font-size:14.5px;color:#56616f}footer p{max-width:60em}
 """
 FONTS = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">'
@@ -69,7 +82,7 @@ def numbers(res="results"):
 def fragment(n, img):
     """img maps a figure name to its URL. Returns the page body."""
     return f"""<main>
-<header class="hero" style="background-image:url({img['hero']})"><h1>Finding land for solar farms near airports, so hydrogen aviation can be truly clean</h1></header>
+<header class="hero" style="background-image:url({img['hero']})"><h1>Finding suitable solar farm land for clean hydrogen aviation</h1></header>
 
 <section class="sec"><div class="wrap bio">
 <img src="{img['me']}" alt="Aboud Beroual">
@@ -157,26 +170,36 @@ def fragment(n, img):
 <li>Real land is almost all ordinary, so real-world accuracy would be lower than in the test.</li>
 <li>These {n['n_air']} airports are mostly surrounded by city.</li>
 </ul></div>
-<div><h3>What comes next</h3><ul>
-<li>Remove runways, buildings, water and existing farms before scoring.</li>
-<li>Add distance to power lines, slope and protected areas.</li>
-<li>Score every US general-aviation airport.</li>
-<li>Convert usable land into megawatts and kilograms of hydrogen.</li>
-</ul></div>
 </div></section>
 
-<section class="sec"><div class="wrap split">
-<div>
+<section class="sec"><div class="wrap">
+<p class="kick">Next steps</p>
+<h2>Making the map useful</h2>
+<div class="next">
+<div><span>1</span><b>Mask what is off limits</b><p>Runways, buildings, water and existing solar farms.</p></div>
+<div><span>2</span><b>Add what satellites miss</b><p>Power lines, slope and protected areas.</p></div>
+<div><span>3</span><b>Cover every airport</b><p>All US general-aviation airports, not {n['n_air']}.</p></div>
+<div><span>4</span><b>Turn land into fuel</b><p>Megawatts of solar, then kilograms of hydrogen.</p></div>
+</div>
+</div></section>
+
+<section class="sec"><div class="wrap">
 <p class="kick">Tools and data</p>
 <h2>Built with open data and free tools</h2>
-<div class="tools">
-<img src="{img['colab']}" alt="Google Colab"><img src="{img['ee']}" alt="Google Earth Engine" style="height:30px"><span>AlphaEarth Foundations</span><img src="{img['s2logo']}" alt="Copernicus Sentinel-2" style="height:72px"><img src="{img['usgs']}" alt="USGS">
-</div>
-<img class="shot" style="margin-top:36px" src="{img['colabshot']}" alt="Three lines of Python in Google Colab that run the whole pipeline">
-<p class="cap">The whole study runs from three calls in a Colab notebook.</p>
-</div>
+<div class="wheel"><div class="ring">
+<div><img src="{img['colab']}" alt="Google Colab"><b>Google Colab</b><small>Runs the code in the cloud</small></div>
+<div><img src="{img['ee']}" alt="Google Earth Engine"><b>Earth Engine</b><small>Serves the satellite data</small></div>
+<div><span class="txt">AlphaEarth Foundations</span><small>Google DeepMind's 64-number fingerprint of every 10 m square</small></div>
+<div><img src="{img['s2logo']}" alt="Copernicus Sentinel-2" style="max-height:84px"><b>Sentinel-2</b><small>The comparison imagery</small></div>
+<div><img src="{img['usgs']}" alt="USGS"><b>USPVDB</b><small>Where US solar farms are</small></div>
+<div><span class="txt">Python</span><small>scikit-learn for the model, matplotlib for the figures</small></div>
+</div></div>
+<div class="split" style="margin-top:44px">
+<figure style="margin:0"><img class="shot" src="{img['colabshot']}" alt="Three lines of Python in Google Colab that run the whole pipeline">
+<figcaption class="cap">The whole study runs from three calls in a Colab notebook.</figcaption></figure>
 <figure style="margin:0"><img class="shot" src="{img['s2sat']}" alt="Illustration of the Sentinel-2 satellite imaging the Earth in several colour bands">
 <figcaption class="cap">Sentinel-2 photographs the same ground every five days in 13 colour bands. Illustration: ESA.</figcaption></figure>
+</div>
 </div></section>
 
 <footer><div class="wrap">
@@ -191,7 +214,7 @@ def build(res="results", out="docs/index.html"):
     img = IMG
     html = ("<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
-            "<title>Finding land for solar farms near airports, so hydrogen aviation can be truly clean</title>\n"
+            "<title>Finding suitable solar farm land for clean hydrogen aviation</title>\n"
             f"{FONTS}\n<style>{CSS}</style>\n</head>\n<body>\n{fragment(n, img)}\n</body>\n</html>\n")
     open(out, "w").write(html)
     return n
