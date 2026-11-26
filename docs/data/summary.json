@@ -1,0 +1,55 @@
+{
+ "placeholder": false,
+ "generated": "2026-11-26",
+ "uspvdb_snapshot_date": "2026-11-26",
+ "uspvdb_total": 6611,
+ "n_farms": 3472,
+ "n_positive_points": 10416,
+ "n_negative_points": 10232,
+ "n_states": 50,
+ "online_years": [
+  2019,
+  2024
+ ],
+ "embedding_years": [
+  2017,
+  2025
+ ],
+ "n_folds": 5,
+ "n_seeds": 5,
+ "hypothesis": {
+  "supported": true,
+  "metric": "average precision",
+  "ae_n": 100,
+  "s2_n": 1000,
+  "ae_mean": 0.6769120072427037,
+  "s2_mean": 0.6656795423848978,
+  "diff_mean": 0.01123246485780589,
+  "diff_ci95": [
+   -0.03243428518655528,
+   0.054899214902167065
+  ]
+ },
+ "robustness": {
+  "main_offset": -2,
+  "check_offset": -1,
+  "n_labels": 100,
+  "ae_mean_main": 0.676912,
+  "s2_mean_main": 0.625685,
+  "ae_mean_check": 0.778785,
+  "s2_mean_check": 0.751569
+ },
+ "airport_threshold": 0.9807578671115896,
+ "airport_threshold_note": "Lowest score at which precision on held-out states reaches 95% (balanced test data); it recovers only 1.4% of solar pixels there, so the threshold itself rests on few pixels and is a rough estimate.",
+ "repo_url": "https://github.com/abboudberoual/alphaearth-airport-solar",
+ "verdict_text": "Main test: matches, not clearly better. Robustness check: fails",
+ "verdict_mixed": true,
+ "findings": [
+  "Main test (land seen two years before opening): AlphaEarth with 100 labels scored 0.677, Sentinel-2 with 1,000 labels scored 0.666. The difference is +0.011, and its 95% interval across the five held-out groups of states runs from -0.032 to +0.055, which includes zero. By the rule written down in advance that is \"matches\", not \"beats\"; strictly, the two cannot be told apart, and AlphaEarth could be slightly worse.",
+  "At equal label counts AlphaEarth is ahead at every size from 50 labels up: 0.773 against 0.666 at 1,000 labels. At 10 labels the two are indistinguishable (0.576 and 0.571; chance is about 0.5).",
+  "The robustness check did not agree with the main test. Seen one year before opening, AlphaEarth with 100 labels scored 0.779 and Sentinel-2 with 1,000 labels scored 0.817 (difference -0.038, interval -0.073 to -0.003): the hypothesis fails there.",
+  "Every score is much higher one year before opening than two years before (AlphaEarth at 1,000 labels: 0.867 against 0.773). Site preparation is often already visible a year ahead, so one-year-before scores probably measure in part \"construction has started\", not \"this land suits solar\". The embeddings are consistent with this: a solar site's embedding typically changes more between those two years (median similarity 0.866) than nearby ordinary land does (0.966). Some sites may be disturbed even earlier; that was not checked, so the main-test scores may also contain some construction signal.",
+  "The task is hard. Even with 1,000 labels the best two-years-before score is 0.773: where solar farms get built depends heavily on things a satellite cannot see.",
+  "Around the airports, the pre-registered high-confidence threshold (0.981) flags almost nothing: it only recovers 1.4% of solar pixels in testing, and the largest flagged area near any of the 20 airports is 0.31 km\u00b2 (Washington Dulles International Airport). The model is not confident enough for site screening at that bar. Existing solar farms were not masked out, so some flagged pixels may be panels that are already there. The mean score column is shown for context only; it was not part of the pre-registered plan."
+ ]
+}

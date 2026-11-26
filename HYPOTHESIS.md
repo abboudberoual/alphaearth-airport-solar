@@ -67,5 +67,22 @@ projection (EPSG:5070). Permanent water is excluded.
    county boundaries needed).
 3. The baseline is seasonal composites rather than one annual median, to make it a fairer opponent.
 
-## Deviations after results
-None yet.
+## Deviations and additions after results
+The sections above are unchanged from the pre-registration commit. Added or found afterwards:
+1. **Analyses added after seeing results (exploratory, not pre-registered):** the formal 100-vs-1,000 test at
+   one year before; the year-to-year embedding similarity ("drift") comparison; the mean score per airport.
+2. **The label snapshot file is not in `data/` yet**, contrary to the Labels line above. It was saved in the
+   Colab session of the run (26 November 2026) and is too large to copy out by the route used. Until it is
+   added, a re-run downloads a fresh snapshot.
+3. **Implementation details not spelled out above:** positives are drawn at least 10 m inside the footprint
+   where its shape allows; the 500 m rule is applied to each farm's bounding box, which is slightly stricter
+   than stated; four negative candidates are drawn per farm and those on water or with no land-cover value
+   are dropped, so some farms have fewer than three negatives (10,232 in total for 3,472 farms); positive and
+   negative training pixels are drawn independently, so one farm neighbourhood can supply one of each.
+4. **"Never" was too strong.** Folds follow the farm's state. Two farms either side of a state border, or a
+   negative that falls across the border, can be close together in different folds.
+5. **Not pre-registered and not done:** existing solar farms are not masked out of the airport areas; the
+   baseline uses single pixels while the embeddings also carry some spatial context; Alaska and Hawaii farms
+   are included although the equal-area projection is designed for the lower 48 states.
+6. **Timing.** The pre-registration commit was made at about 14:00 and the Colab run that produced the
+   results ran from about 14:10 to 14:50 (Toronto time) on the same day.

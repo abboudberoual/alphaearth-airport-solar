@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Finding solar-like land near airports with AlphaEarth embeddings: a label-efficiency test</title>
+<meta name="description" content="An independent student research project testing whether AlphaEarth satellite embeddings can find land near airports that resembles land where US solar farms were later built, using only a handful of labelled examples.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div id="placeholder-banner" class="banner" role="alert" hidden>
+  <strong>PLACEHOLDER DATA: not real results</strong>
+  <span>Every number on this page is a made-up stand-in until the real results are published.</span>
+</div>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <span class="brand"><span class="brand-mark" aria-hidden="true"></span>Airport solar label-efficiency test</span>
+    <nav aria-label="Sections">
+      <a href="#result">Result</a>
+      <a href="#robustness">Robustness</a>
+      <a href="#drift" data-nav="drift" hidden>Drift</a>
+      <a href="#airports">Airports</a>
+      <a href="#gallery" data-nav="gallery" hidden>Gallery</a>
+      <a href="#method">Method</a>
+      <a href="#limits">Limits</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-text">
+        <p class="eyebrow">Independent student research project</p>
+        <h1>Finding solar-like land near airports with AlphaEarth embeddings: <span class="h1-sub">a label-efficiency test</span></h1>
+        <p class="lede">Can AlphaEarth satellite embeddings find land near airports that resembles land where US solar farms were later built, using only a handful of labelled examples, as well as ordinary Sentinel-2 imagery features do with ten times as many?</p>
+        <p class="byline">By <strong>Aboud</strong>, aerospace engineering student, Concordia University (class of 2028). This is personal work and is not affiliated with, or endorsed by, any of the data providers named on this page.</p>
+        <p class="hero-links">
+          <a class="btn btn-primary" data-repo hidden>Code and data on the repository</a>
+          <a class="btn" href="#method">How it was done</a>
+          <a class="btn" href="#limits">What it cannot tell you</a>
+        </p>
+      </div>
+
+      <aside class="verdict" id="verdict" aria-live="polite" aria-label="Result of the pre-registered hypothesis">
+        <p class="verdict-kicker">Pre-registered hypothesis</p>
+        <p class="verdict-chip" id="verdict-chip"><span class="chip-icon" aria-hidden="true"></span><span id="verdict-text">Loading result</span></p>
+        <div class="versus">
+          <div class="versus-item">
+            <span class="versus-key"><span class="key key-ae" aria-hidden="true"></span>AlphaEarth</span>
+            <span class="versus-num" data-f="ae_mean">&hellip;</span>
+            <span class="versus-note">with <span data-f="ae_n">&hellip;</span> labels</span>
+          </div>
+          <div class="versus-vs" aria-hidden="true">vs</div>
+          <div class="versus-item">
+            <span class="versus-key"><span class="key key-s2" aria-hidden="true"></span>Sentinel-2</span>
+            <span class="versus-num" data-f="s2_mean">&hellip;</span>
+            <span class="versus-note">with <span data-f="s2_n">&hellip;</span> labels</span>
+          </div>
+        </div>
+        <p class="verdict-foot">Scores are <span data-f="metric">&hellip;</span> on held-out states. Difference <strong data-f="diff">&hellip;</strong>, with a 95% confidence interval across the held-out groups of states of <span data-f="ci_lo">&hellip;</span> to <span data-f="ci_hi">&hellip;</span>.</p>
+        <p class="verdict-foot muted">The hypothesis was written down before the experiment ran. Whichever way it came out, it is reported as-is.</p>
+      </aside>
+    </div>
+  </section>
+
+  <div id="load-error" class="wrap" hidden>
+    <div class="error-box" role="alert"></div>
+  </div>
+
+  <section class="section tight" aria-labelledby="keys-h">
+    <div class="wrap">
+      <h2 id="keys-h" class="visually-hidden">Key numbers</h2>
+      <dl class="stats" id="stats"></dl>
+      <p class="fine" id="stats-note"></p>
+    </div>
+  </section>
+
+  <section class="section alt" id="findings" aria-labelledby="findings-h" hidden>
+    <div class="wrap">
+      <p class="eyebrow">In short</p>
+      <h2 id="findings-h">What I found</h2>
+      <ol class="findings" id="findings-list"></ol>
+    </div>
+  </section>
+
+  <section class="section" id="result" aria-labelledby="result-h">
+    <div class="wrap">
+      <p class="eyebrow">Main result</p>
+      <h2 id="result-h">How many labelled examples does each kind of feature need?</h2>
+      <p class="section-intro">The same simple classifier was trained on more and more labelled pixels, once using AlphaEarth embeddings and once using Sentinel-2 seasonal-composite features. If the embeddings carry more useful information per example, their line sits higher on the left of the chart. The hypothesis compares AlphaEarth at <span data-f="ae_n">&hellip;</span> labels against Sentinel-2 at <span data-f="s2_n">&hellip;</span> labels, the two ringed points.</p>
+
+      <figure class="card figure" id="le-figure">
+        <div class="controls" id="le-controls"></div>
+        <div class="legend" id="le-legend" aria-hidden="true"></div>
+        <div class="chart" id="le-chart"></div>
+        <figcaption id="le-caption"></figcaption>
+        <details class="table-details">
+          <summary>Show the numbers behind this chart</summary>
+          <div class="table-scroll" id="le-table"></div>
+        </details>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section alt" id="robustness" aria-labelledby="rob-h">
+    <div class="wrap two-col">
+      <div>
+        <p class="eyebrow">Robustness check</p>
+        <h2 id="rob-h">Does the result depend on which year the model looks at?</h2>
+        <p>The main experiment shows the model each solar site as it looked <strong data-f="main_offset_words">&hellip;</strong> the farm opened, so that it sees untouched land. But large farms can take a long time to build, and some ground may already be cleared by then.</p>
+        <p>As a check, everything was run again using the satellite year <strong data-f="check_offset_words">&hellip;</strong> opening. If scores jump in the check, part of the signal may be early construction and not the land itself. If they stay about the same, the result does not hinge on that choice.</p>
+        <p id="rob-sentence" class="callout"></p>
+      </div>
+      <div class="card" id="rob-card">
+        <div class="table-scroll" id="rob-table"></div>
+        <p class="fine">Both rows use <span data-f="rob_n">&hellip;</span> labelled examples and the linear probe. Scores are <span data-f="metric">&hellip;</span>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="drift" aria-labelledby="drift-h" hidden>
+    <div class="wrap">
+      <p class="eyebrow">Sanity check</p>
+      <h2 id="drift-h">Does the embedding notice a solar farm being built?</h2>
+      <p class="section-intro">Each site's embedding in one year was compared with its embedding in another year using cosine similarity (a score near the top of the scale means the two years look almost identical to the model). Here Y stands for the year a farm opened. Land that stays the same should stay similar from year to year; land that becomes a solar farm should not.</p>
+      <figure class="card figure">
+        <div class="legend" id="drift-legend" aria-hidden="true"></div>
+        <div class="chart" id="drift-chart"></div>
+        <figcaption>Markers show the median similarity; bars span the middle half of sites (from the lower to the upper quartile).</figcaption>
+        <details class="table-details">
+          <summary>Show the numbers behind this chart</summary>
+          <div class="table-scroll" id="drift-table"></div>
+        </details>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section alt" id="airports" aria-labelledby="air-h">
+    <div class="wrap">
+      <p class="eyebrow">Applying the model</p>
+      <h2 id="air-h">Where is the solar-like land near airports?</h2>
+      <p class="section-intro">The final model scored every land pixel within 5 km of <span data-f="n_airports">&hellip;</span> airports. A pixel counts as &ldquo;solar-like&rdquo; when its score is at or above <span data-f="threshold">&hellip;</span>. <span id="threshold-note"></span></p>
+
+      <figure class="card figure">
+        <div class="map-legend" id="map-legend"></div>
+        <div class="chart map" id="map"></div>
+        <figcaption id="map-caption">Each circle is one airport. Bigger and darker circles have more solar-like land nearby. Hover, tap, or use the table below for exact values.</figcaption>
+      </figure>
+
+      <div class="card table-card">
+        <div class="table-tools">
+          <label for="air-filter">Find an airport or state</label>
+          <input type="search" id="air-filter" placeholder="Type a name or state code" autocomplete="off">
+          <span class="fine" id="air-count" aria-live="polite"></span>
+        </div>
+        <div class="table-scroll" id="air-table"></div>
+        <p class="table-more"><button type="button" class="btn" id="air-more" hidden></button></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="gallery" aria-labelledby="gal-h" hidden>
+    <div class="wrap">
+      <p class="eyebrow">Close-ups</p>
+      <h2 id="gal-h">What the model highlights around individual airports</h2>
+      <div class="gallery" id="gallery-grid"></div>
+    </div>
+  </section>
+
+  <section class="section" id="method" aria-labelledby="method-h">
+    <div class="wrap narrow">
+      <p class="eyebrow">Method</p>
+      <h2 id="method-h">How it was done, in plain language</h2>
+      <p class="hypothesis-box"><strong>The hypothesis, fixed in advance:</strong> with <span data-f="ae_n">&hellip;</span> labelled examples, a linear probe (a simple straight-line classifier, here logistic regression) trained on AlphaEarth embeddings matches or beats the same classifier trained on <span data-f="s2_n">&hellip;</span> examples of Sentinel-2 seasonal-composite features.</p>
+      <ol class="steps">
+        <li><h3>Two ways of describing a patch of ground</h3>
+          <p>AlphaEarth embeddings summarise each 10 m pixel for each year as 64 numbers (a compact fingerprint produced by a model trained on many kinds of satellite data), accessed through Google Earth Engine. The comparison is ordinary Sentinel-2 imagery, turned into seasonal composites (a typical cloud-free value of each colour band for each season of the year).</p></li>
+        <li><h3>Where the solar farms are</h3>
+          <p>Labels come from USPVDB (a database of US solar farms of at least 1 MW, kept by USGS and Lawrence Berkeley National Laboratory). The snapshot used is dated <span data-f="snapshot">&hellip;</span> and lists <span data-f="total">&hellip;</span> farms, of which <span data-f="farms">&hellip;</span> that opened between <span data-f="online_range">&hellip;</span> were used.</p></li>
+        <li><h3>Positive examples: the land before the panels</h3>
+          <p>Positives are pixels inside solar-farm footprints, taken from the satellite year <span data-f="main_offset_words">&hellip;</span> the farm opened. The aim is for the model to see untouched land, not panels or construction (the results show this only partly works one year ahead). The satellite year <span data-f="check_offset_words">&hellip;</span> opening is kept as a robustness check.</p></li>
+        <li><h3>Negative examples: ordinary land nearby</h3>
+          <p>Negatives are random land pixels between 2 and 20 km from each farm, taken from the same year, so both kinds of example share the same region, climate and season.</p></li>
+        <li><h3>Testing on places the model has never seen</h3>
+          <p>The test uses spatial cross-validation (whole US states are held out in turn, so nearby pixels very rarely end up on both sides; the exception is land right at a state border). There are <span data-f="n_folds">&hellip;</span> such splits across <span data-f="n_states">&hellip;</span> states and districts.</p></li>
+        <li><h3>Starving the classifier of labels</h3>
+          <p>Training sets of <span data-f="sizes">&hellip;</span> labels were drawn at random, repeated with <span data-f="n_seeds">&hellip;</span> random seeds (different random draws, to show how much luck matters). A random forest (many small decision trees voting together) was also run as a second classifier.</p></li>
+        <li><h3>Scoring</h3>
+          <p>Two metrics are reported: average precision (how well the model ranks true solar sites above everything else, where a coin flip scores one half on a balanced test set) and F1 (a single score that balances missed sites against false alarms).</p></li>
+        <li><h3>Looking around airports</h3>
+          <p>The final model was applied to all land within 5 km of each airport, and the area scoring above the threshold was added up.</p></li>
+      </ol>
+      <p class="fine">Why airports? The longer-term motivation is on-site solar power for making hydrogen fuel at airports.</p>
+    </div>
+  </section>
+
+  <section class="section alt" id="limits" aria-labelledby="limits-h">
+    <div class="wrap narrow">
+      <p class="eyebrow">Limits</p>
+      <h2 id="limits-h">What this result does not show</h2>
+      <ul class="limits">
+        <li><h3>&ldquo;Looks like land that got built on&rdquo; is not &ldquo;can be built on&rdquo;</h3>
+          <p>The model only knows what land looks like from orbit. Grid connections, zoning and ownership are invisible from space, and any one of them can rule a site out.</p></li>
+        <li><h3>Real-world precision would be much lower</h3>
+          <p>The test set is balanced, half solar and half not, while real land is overwhelmingly non-solar. On real land, most pixels the model flags would be false alarms, so the scores here should be read as a comparison between feature sets, not as a hit rate.</p></li>
+        <li><h3>The busiest general-aviation airports are mostly urban</h3>
+          <p>Many of the airports scored here are surrounded by built-up land, which limits how much open ground there is to find in the first place.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="credits" aria-labelledby="credits-h">
+    <div class="wrap two-col">
+      <div>
+        <p class="eyebrow">Data and credits</p>
+        <h2 id="credits-h">Sources</h2>
+        <ul class="credits">
+          <li><strong>AlphaEarth Foundations Satellite Embedding dataset</strong>, accessed through Google Earth Engine.</li>
+          <li><strong>USPVDB</strong>, the United States Large-Scale Solar Photovoltaic Database, by USGS and Lawrence Berkeley National Laboratory.</li>
+          <li><strong>Copernicus Sentinel-2</strong> imagery, used for the comparison features.</li>
+          <li><strong>Airport list</strong>: the airports scored and where the list comes from are documented in the repository.</li>
+          <li>State outlines from the us-atlas package (US Census Bureau cartographic boundaries). Charts drawn with D3.</li>
+        </ul>
+        <p class="fine">All names belong to their owners and are mentioned only to credit the data. This page is not a product or publication of any of these organisations.</p>
+      </div>
+      <div>
+        <p class="eyebrow">Reproduce</p>
+        <h2>Run it yourself</h2>
+        <p>The code that builds the labels, runs the experiment and writes the JSON files this page reads is in the repository.</p>
+        <p><a class="btn btn-primary" data-repo hidden>Open the repository</a></p>
+        <p class="fine">Page data generated <span data-f="generated">&hellip;</span>.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <p>Independent student research by Aboud, Concordia University. Not an official page of any data provider.</p>
+  </div>
+</footer>
+
+<div id="tooltip" class="tooltip" role="status" hidden></div>
+
+<noscript><p class="noscript">This page loads its results from data files with JavaScript. Please enable JavaScript to see them.</p></noscript>
+
+<script src="vendor/d3.min.js"></script>
+<script src="vendor/topojson-client.min.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

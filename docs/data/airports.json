@@ -1,0 +1,222 @@
+[
+ {
+  "name":"Washington Dulles International Airport",
+  "state":"VA",
+  "lon":-77.4578886,
+  "lat":38.9522483,
+  "solar_like_km2":0.3078,
+  "solar_like_frac":0.0039762814,
+  "mean_score":0.500948821,
+  "existing_farms_5km":0,
+  "land_km2":77.4090086275
+ },
+ {
+  "name":"Laurence G. Hanscom Field",
+  "state":"MA",
+  "lon":-71.287178,
+  "lat":42.4629631,
+  "solar_like_km2":0.2781458824,
+  "solar_like_frac":0.003652826,
+  "mean_score":0.285603718,
+  "existing_farms_5km":2,
+  "land_km2":76.1453956863
+ },
+ {
+  "name":"Teterboro Airport",
+  "state":"NJ",
+  "lon":-74.0615292,
+  "lat":40.858332,
+  "solar_like_km2":0.0788811765,
+  "solar_like_frac":0.0010659599,
+  "mean_score":0.374489422,
+  "existing_farms_5km":1,
+  "land_km2":74.0001345098
+ },
+ {
+  "name":"William P. Hobby Airport",
+  "state":"TX",
+  "lon":-95.2768951,
+  "lat":29.6459141,
+  "solar_like_km2":0.0162478431,
+  "solar_like_frac":0.0002113371,
+  "mean_score":0.3493710636,
+  "existing_farms_5km":0,
+  "land_km2":76.8811564706
+ },
+ {
+  "name":"Chicago Executive Airport",
+  "state":"IL",
+  "lon":-87.9016055,
+  "lat":42.1161287,
+  "solar_like_km2":0.0098,
+  "solar_like_frac":0.0001279606,
+  "mean_score":0.1237140551,
+  "existing_farms_5km":0,
+  "land_km2":76.5860631373
+ },
+ {
+  "name":"Westchester County Airport",
+  "state":"NY",
+  "lon":-73.7086641,
+  "lat":41.0683325,
+  "solar_like_km2":0.005,
+  "solar_like_frac":0.0000699677,
+  "mean_score":0.2161237846,
+  "existing_farms_5km":0,
+  "land_km2":71.4615145098
+ },
+ {
+  "name":"Nashville International Airport",
+  "state":"TN",
+  "lon":-86.6762176,
+  "lat":36.1248851,
+  "solar_like_km2":0.0045,
+  "solar_like_frac":0.0000584124,
+  "mean_score":0.290424726,
+  "existing_farms_5km":0,
+  "land_km2":77.0383890196
+ },
+ {
+  "name":"San Jose Mineta International Airport",
+  "state":"CA",
+  "lon":-121.9285932,
+  "lat":37.3635295,
+  "solar_like_km2":0.0009,
+  "solar_like_frac":0.0000115994,
+  "mean_score":0.385173725,
+  "existing_farms_5km":1,
+  "land_km2":77.5902305882
+ },
+ {
+  "name":"John Wayne Airport",
+  "state":"CA",
+  "lon":-117.8692422,
+  "lat":33.674687,
+  "solar_like_km2":0.0002,
+  "solar_like_frac":0.0000026278,
+  "mean_score":0.4569534927,
+  "existing_farms_5km":1,
+  "land_km2":76.108572549
+ },
+ {
+  "name":"Dallas Love Field",
+  "state":"TX",
+  "lon":-96.8484951,
+  "lat":32.8438345,
+  "solar_like_km2":0.0002,
+  "solar_like_frac":0.0000026241,
+  "mean_score":0.3398542443,
+  "existing_farms_5km":0,
+  "land_km2":76.2173556863
+ },
+ {
+  "name":"Palm Beach International Airport",
+  "state":"FL",
+  "lon":-80.0928165,
+  "lat":26.6857475,
+  "solar_like_km2":0.0,
+  "solar_like_frac":0.0,
+  "mean_score":0.2675807026,
+  "existing_farms_5km":0,
+  "land_km2":72.4392117647
+ },
+ {
+  "name":"Van Nuys Airport",
+  "state":"CA",
+  "lon":-118.4896448,
+  "lat":34.2096399,
+  "solar_like_km2":0.0,
+  "solar_like_frac":0.0,
+  "mean_score":0.369191095,
+  "existing_farms_5km":4,
+  "land_km2":77.40712
+ },
+ {
+  "name":"DeKalb-Peachtree Airport",
+  "state":"GA",
+  "lon":-84.3079452,
+  "lat":33.876789,
+  "solar_like_km2":0.0,
+  "solar_like_frac":0.0,
+  "mean_score":0.1577458992,
+  "existing_farms_5km":0,
+  "land_km2":77.2302792157
+ },
+ {
+  "name":"Scottsdale Airport",
+  "state":"AZ",
+  "lon":-111.9044155,
+  "lat":33.6254487,
+  "solar_like_km2":0.0,
+  "solar_like_frac":0.0,
+  "mean_score":0.2378881201,
+  "existing_farms_5km":1,
+  "land_km2":77.2327733333
+ },
+ {
+  "name":"Chicago Midway International Airport",
+  "state":"IL",
+  "lon":-87.7521884,
+  "lat":41.7867759,
+  "solar_like_km2":0.0,
+  "solar_like_frac":0.0,
+  "mean_score":0.2950913885,
+  "existing_farms_5km":2,
+  "land_km2":76.7916976471
+ },
+ {
+  "name":"Harry Reid International Airport",
+  "state":"NV",
+  "lon":-115.1482238,
+  "lat":36.0830907,
+  "solar_like_km2":0.0,
+  "solar_like_frac":0.0,
+  "mean_score":0.3748430851,
+  "existing_farms_5km":2,
+  "land_km2":77.2549807843
+ },
+ {
+  "name":"Miami-Opa Locka Executive Airport",
+  "state":"FL",
+  "lon":-80.2774304,
+  "lat":25.9074498,
+  "solar_like_km2":0.0,
+  "solar_like_frac":0.0,
+  "mean_score":0.3335483855,
+  "existing_farms_5km":0,
+  "land_km2":74.4184913725
+ },
+ {
+  "name":"Naples Municipal Airport",
+  "state":"FL",
+  "lon":-81.7749476,
+  "lat":26.1521074,
+  "solar_like_km2":0.0,
+  "solar_like_frac":0.0,
+  "mean_score":0.1489839498,
+  "existing_farms_5km":0,
+  "land_km2":64.3128647059
+ },
+ {
+  "name":"Centennial Airport",
+  "state":"CO",
+  "lon":-104.8462922,
+  "lat":39.5795225,
+  "solar_like_km2":0.0,
+  "solar_like_frac":0.0,
+  "mean_score":0.1449912696,
+  "existing_farms_5km":0,
+  "land_km2":77.3750360784
+ },
+ {
+  "name":"Aspen\/Pitkin County Airport",
+  "state":"CO",
+  "lon":-106.8676274,
+  "lat":39.2212671,
+  "solar_like_km2":0.0,
+  "solar_like_frac":0.0,
+  "mean_score":0.0685588988,
+  "existing_farms_5km":1,
+  "land_km2":77.5386078431
+ }
+]

@@ -1,0 +1,45 @@
+{
+ "snapshot_date": "2026-11-26",
+ "uspvdb_total": 6611,
+ "n_farms": 3472,
+ "n_pos": 10416,
+ "n_neg": 10232,
+ "neg_dropped_water_or_nodata": 671,
+ "offset-2": {
+  "emb_returned": 20648,
+  "s2_returned": 20648,
+  "s2_clear_quarters_counts": {
+   "1": 9,
+   "2": 15,
+   "3": 230,
+   "4": 20394
+  },
+  "s2_zero_clear_by_year": {},
+  "samples_by_year": {
+   "2017": 3232,
+   "2018": 3967,
+   "2019": 4220,
+   "2020": 2355,
+   "2021": 3004,
+   "2022": 3870
+  }
+ },
+ "offset-1": {
+  "emb_returned": 20648,
+  "s2_returned": 20648,
+  "s2_clear_quarters_counts": {
+   "2": 8,
+   "3": 75,
+   "4": 20565
+  },
+  "s2_zero_clear_by_year": {},
+  "samples_by_year": {
+   "2018": 3232,
+   "2019": 3967,
+   "2020": 4220,
+   "2021": 2355,
+   "2022": 3004,
+   "2023": 3870
+  }
+ }
+}
