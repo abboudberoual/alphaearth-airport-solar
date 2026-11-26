@@ -68,6 +68,9 @@ All quantities are screening-level upper bounds: they ignore grid connection, ow
    the status was not recorded, including every line near Centennial and Aspen. The pre-set rule ("IN SERVICE"
    only) treated them as absent, which put zero grid near both Colorado airports. Lines are now kept unless their
    status says they are not operating; airports with unrecorded-status lines in their box were re-run.
+7. **D, map images.** The "within 2 km of a line" overlay images on the map were redrawn locally from the usable-land
+   images and the line file with the corrected status rule (the Earth Engine copies for 13 airports were not copied
+   out). They are illustrations; all reported areas come from Earth Engine.
 5. **B, per-point scores not saved to the repo.** The summary values were copied from the notebook output; the
    per-point score file stayed in the Colab session. Re-running `followup.forward()` regenerates it.
 

@@ -144,21 +144,21 @@ select{font:inherit;font-size:13px;padding:6px 8px;border:1px solid #cfd6df;bord
     if (!window.GMAPS_KEY) { $("#note").textContent = "Map key not set yet."; return; }
     window.__initMap = () => startMap();
     const s = document.createElement("script");
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(window.GMAPS_KEY)}&callback=__initMap&v=weekly`;
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(window.GMAPS_KEY)}&v=weekly&loading=async&libraries=marker&callback=__initMap`;
     s.async = true; s.onerror = () => { $("#note").textContent = "Google Maps could not load."; };
     document.head.appendChild(s);
   }
 
   function startMap() {
     $("#note").remove(); $("#legend").hidden = false;
-    map = new google.maps.Map($("#map"), { mapTypeId: "hybrid", center: { lat: 38, lng: -96 }, zoom: 4, streetViewControl: false, fullscreenControl: true, mapTypeControl: true, tilt: 0 });
+    map = new google.maps.Map($("#map"), { mapId: window.GMAPS_MAP_ID || "DEMO_MAP_ID", mapTypeId: "hybrid", center: { lat: 38, lng: -96 }, zoom: 4, streetViewControl: false, fullscreenControl: true, mapTypeControl: true, tilt: 0 });
     info = new google.maps.InfoWindow();
     airports.forEach(r => {
       const b = { west: r.box[0], south: r.box[1], east: r.box[2], north: r.box[3] };
       ["avail", "grid", "score"].forEach(k => overlays[`${r.faa_id}_${k}`] = new google.maps.GroundOverlay(`data/map/overlays/${r.faa_id}_${k}.png`, b, { clickable: false, opacity: 1 }));
       circles[r.faa_id] = new google.maps.Circle({ center: { lat: r.lat, lng: r.lon }, radius: 5000, strokeColor: "#ffffff", strokeWeight: 2, strokeOpacity: .95, fillOpacity: 0, clickable: false });
-      markers[r.faa_id] = new google.maps.Marker({ position: { lat: r.lat, lng: r.lon }, map, title: r.name });
-      markers[r.faa_id].addListener("click", () => {
+      markers[r.faa_id] = new google.maps.marker.AdvancedMarkerElement({ position: { lat: r.lat, lng: r.lon }, map, title: r.name, gmpClickable: true });
+      markers[r.faa_id].addEventListener("gmp-click", () => {
         info.setContent(`<div class="info"><b>${r.name}</b><br>Usable land: ${fmt(r.available_km2)} km&sup2;<br>Within 2 km of a line: ${fmt(r.grid2_km2)} km&sup2;<br>Hydrogen (upper bound): ${fmt(r.grid2_h2, 0)} t/day from grid-ready land<br>Nearest line: ${r.airport_to_line_km == null ? "none within 12 km" : fmt(r.airport_to_line_km) + " km"}</div>`);
         info.open({ map, anchor: markers[r.faa_id] }); go(r.faa_id, false);
       });
