@@ -161,7 +161,12 @@ body.embed .wrap{height:100%}body.embed #map{min-height:100%;flex:1 1 100%}
   function go(id, preset) {
     S.current = id; const r = airports.find(x => x.faa_id === id);
     if (preset) { S.layers = { avail: true, grid: true, score: false, lines: true, farms: true, circle: true }; syncChips(); }
-    if (map && r) map.fitBounds({ west: r.box[0], south: r.box[1], east: r.box[2], north: r.box[3] }, 0);
+    if (map && r) {
+      const dLat = 6.2 / 110.57, dLon = 6.2 / (111.32 * Math.cos(r.lat * Math.PI / 180));
+      const wide = $("#map").clientWidth > 720;
+      map.fitBounds({ west: r.lon - dLon, south: r.lat - dLat, east: r.lon + dLon, north: r.lat + dLat },
+        EMBED ? { top: 12, bottom: 12, right: 12, left: wide ? 350 : 12 } : 0);
+    }
     renderList(); applyLayers(); writeHash();
   }
 
@@ -206,7 +211,7 @@ body.embed .wrap{height:100%}body.embed #map{min-height:100%;flex:1 1 100%}
     info = new google.maps.InfoWindow();
     airports.forEach(r => {
       const b = { west: r.box[0], south: r.box[1], east: r.box[2], north: r.box[3] };
-      ["avail", "grid", "score"].forEach(k => overlays[`${r.faa_id}_${k}`] = new google.maps.GroundOverlay(`data/map/overlays/${r.faa_id}_${k}.png`, b, { clickable: false, opacity: 1 }));
+      ["avail", "grid", "score"].forEach(k => overlays[`${r.faa_id}_${k}`] = new google.maps.GroundOverlay(`data/map/overlays/${r.faa_id}_${k}.png`, b, { clickable: false, opacity: k === "grid" ? 0.62 : k === "avail" ? 0.9 : 0.85 }));
       circles[r.faa_id] = new google.maps.Circle({ center: { lat: r.lat, lng: r.lon }, radius: 5000, strokeColor: "#ffffff", strokeWeight: 2, strokeOpacity: .95, fillOpacity: 0, clickable: false });
       markers[r.faa_id] = new google.maps.marker.AdvancedMarkerElement({ position: { lat: r.lat, lng: r.lon }, map, title: r.name, gmpClickable: true });
       markers[r.faa_id].addEventListener("gmp-click", () => {
