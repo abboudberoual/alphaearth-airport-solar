@@ -94,7 +94,7 @@ def fragment(n, img):
 <div class="marks"><img src="{img['nserc']}" alt="NSERC"><img src="{img['concordia']}" alt="Concordia University"></div>
 </div>
 </div>
-<div class="wrap"><figure style="margin:64px 0 0"><img class="shot" src="{img['hy4']}" alt="A small twin-fuselage aircraft flying above an airport">
+<div class="wrap"><figure style="margin:64px 0 0"><img class="shot" src="{img['hy4']}" alt="A white twin-fuselage aircraft flying against a blue sky">
 <figcaption class="cap">HY4, an aircraft powered by a hydrogen fuel cell, over Stuttgart Airport on its first flight in 2016. Photo: DLR, Felix Oprean, <a href="https://creativecommons.org/licenses/by/3.0/de/deed.en">CC BY 3.0 DE</a>, via <a href="https://commons.wikimedia.org/wiki/File:HY4_2016-09-29_ueber_Flughafen_Stuttgart.jpg">Wikimedia Commons</a>.</figcaption></figure></div>
 </section>
 
