@@ -45,7 +45,9 @@ def grid_areas(airports_csv, model_json, data_dir, runways_csv, lines_geojson, o
     import geopandas as gpd
     from shapely.geometry import box as sbox, Point
     lines = json.load(open(lines_geojson))["features"]
-    lines = [f for f in lines if str(f["properties"].get("STATUS", "")).upper() == "IN SERVICE" and f.get("geometry")]
+    # Keep a line unless its status says it is not operating. "NOT AVAILABLE" means the status was not recorded.
+    NOT_OPERATING = {"NOT IN SERVICE", "OUT OF SERVICE", "INACTIVE", "PROPOSED", "UNDER CONSTRUCTION", "RETIRED", "DECOMMISSIONED"}
+    lines = [f for f in lines if str(f["properties"].get("STATUS", "")).upper() not in NOT_OPERATING and f.get("geometry")]
     lg = gpd.GeoDataFrame.from_features(lines, crs=4326); lg["i"] = range(len(lg)); lg_m = lg.to_crs(C.EQUAL_AREA_CRS)
     wc = ee.ImageCollection(C.WORLDCOVER_ID).first().select("Map")
     openland = wc.remap(F.OPEN_LAND, [1] * len(F.OPEN_LAND), 0).eq(1)

@@ -64,6 +64,10 @@ All quantities are screening-level upper bounds: they ignore grid connection, ow
    the 28-day NASR subscription cycle linked from the FAA page on the day of the run (file name in the results).
 4. **C, Palm Beach runways not masked.** The FAA runway-end file used had no rows for PBI, so no runway band was
    removed there and its available land is overstated. Not re-run, because of the Earth Engine quota.
+6. **D, line status.** In the downloaded lines (1,248 near the 20 airports), 240 have STATUS "NOT AVAILABLE", meaning
+   the status was not recorded, including every line near Centennial and Aspen. The pre-set rule ("IN SERVICE"
+   only) treated them as absent, which put zero grid near both Colorado airports. Lines are now kept unless their
+   status says they are not operating; airports with unrecorded-status lines in their box were re-run.
 5. **B, per-point scores not saved to the repo.** The summary values were copied from the notebook output; the
    per-point score file stayed in the Colab session. Re-running `followup.forward()` regenerates it.
 
