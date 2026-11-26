@@ -1,0 +1,50 @@
+[
+ {
+  "case_id": 404768,
+  "name": "Sun Mountain Solar 1",
+  "state": "CO",
+  "county": "Pueblo",
+  "p_year": 2021,
+  "width_km": 4.7
+ },
+ {
+  "case_id": 406279,
+  "name": "McFarland A Solar and Storage",
+  "state": "AZ",
+  "county": "Yuma",
+  "p_year": 2023,
+  "width_km": 5.8
+ },
+ {
+  "case_id": 403833,
+  "name": "Ben Moreell Solar Farm",
+  "state": "NJ",
+  "county": "Monmouth",
+  "p_year": 2020,
+  "width_km": 3.0
+ },
+ {
+  "airport": "Washington Dulles International Airport",
+  "slug": "washington-dulles-international-airport",
+  "width_km": 11.2,
+  "score_shown_from": 0.5
+ },
+ {
+  "airport": "Laurence G. Hanscom Field",
+  "slug": "laurence-g-hanscom-field",
+  "width_km": 11.2,
+  "score_shown_from": 0.5
+ },
+ {
+  "airport": "Teterboro Airport",
+  "slug": "teterboro-airport",
+  "width_km": 11.2,
+  "score_shown_from": 0.5
+ },
+ {
+  "airport": "Centennial Airport",
+  "slug": "centennial-airport",
+  "width_km": 11.2,
+  "score_shown_from": 0.5
+ }
+]
