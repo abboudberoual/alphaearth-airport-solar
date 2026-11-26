@@ -39,15 +39,15 @@ p{margin:0 0 14px;max-width:34em}.dim{color:#56616f;font-size:15px}
 .next{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:0;margin-top:44px;border-top:2px dotted #aeb8c5}
 .next div{position:relative;padding:34px 26px 0 0}.next span{position:absolute;top:-20px;left:0;width:38px;height:38px;border-radius:50%;background:#fff;border:2px solid #1b2430;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:14px}
 .next b{display:block;font-size:19px;margin-bottom:6px}.next p{font-size:16px;color:#3a4553;margin:0}
-.wheel{perspective:1500px;height:330px;display:flex;align-items:center;justify-content:center;margin-top:36px;overflow:hidden}
-.ring{position:relative;width:250px;height:220px;transform-style:preserve-3d;animation:spin 42s linear infinite}
+.wheel{perspective:2200px;height:360px;display:flex;align-items:center;justify-content:center;margin-top:28px;overflow-x:clip}
+.ring{--z:260px;position:relative;width:250px;height:220px;transform-style:preserve-3d;animation:spin 42s linear infinite}
 .ring:hover{animation-play-state:paused}
 .ring>div{position:absolute;inset:0;background:#fff;border:1px solid #e3e7ee;border-radius:16px;box-shadow:0 22px 48px -24px rgba(16,24,40,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:22px;text-align:center;backface-visibility:hidden}
-.ring>div:nth-child(1){transform:rotateY(0deg) translateZ(260px)}.ring>div:nth-child(2){transform:rotateY(60deg) translateZ(260px)}.ring>div:nth-child(3){transform:rotateY(120deg) translateZ(260px)}
-.ring>div:nth-child(4){transform:rotateY(180deg) translateZ(260px)}.ring>div:nth-child(5){transform:rotateY(240deg) translateZ(260px)}.ring>div:nth-child(6){transform:rotateY(300deg) translateZ(260px)}
+.ring>div:nth-child(1){transform:rotateY(0deg) translateZ(var(--z))}.ring>div:nth-child(2){transform:rotateY(60deg) translateZ(var(--z))}.ring>div:nth-child(3){transform:rotateY(120deg) translateZ(var(--z))}
+.ring>div:nth-child(4){transform:rotateY(180deg) translateZ(var(--z))}.ring>div:nth-child(5){transform:rotateY(240deg) translateZ(var(--z))}.ring>div:nth-child(6){transform:rotateY(300deg) translateZ(var(--z))}
 .ring img{max-height:58px;max-width:180px;width:auto}.ring b{font-size:17px}.ring small{font-size:14px;color:#56616f;line-height:1.4}.ring .txt{font-size:22px;font-weight:600;letter-spacing:-.01em}
 @keyframes spin{to{transform:rotateY(-360deg)}}
-@media (max-width:640px){.ring{transform:scale(.7)}.wheel{height:260px}}
+@media (max-width:640px){.ring{--z:175px;width:190px;height:200px}.ring>div{padding:14px}.ring img{max-width:140px;max-height:44px}.ring .txt{font-size:18px}.wheel{height:300px}}
 @media (prefers-reduced-motion:reduce){.ring{animation:none}}
 footer{padding:64px 0 80px;font-size:14.5px;color:#56616f}footer p{max-width:60em}
 """
