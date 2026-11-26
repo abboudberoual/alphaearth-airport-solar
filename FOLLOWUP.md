@@ -42,6 +42,16 @@ Within 5 km of each airport, computed in an equal-area projection (EPSG:5070) at
 
 All quantities are screening-level upper bounds: they ignore grid connection, ownership, zoning and cost.
 
+## D. Grid access (added 26 November 2026, about 16:45, before running)
+- **Lines:** HIFLD Electric Power Transmission Lines, as hosted on GeoPlatform ArcGIS Online (item
+  8ac33965336e498cbe35cd238b3f1ee6, data last edited September 2023). Only lines whose STATUS is "IN SERVICE".
+- **Grid-ready land** = available land (C.1) within **2 km** of an in-service transmission line. Also reported at
+  1 km and 5 km.
+- Per airport: distance from the airport's coordinates to the nearest in-service line, the highest voltage within
+  5 km, and the hydrogen upper bound recomputed on grid-ready land with the C.3-C.5 rules.
+- Map overlays (usable land, grid-ready land, model score) are drawn from the same masks; they are illustrations,
+  not additional results.
+
 ## Deviations after running
 1. **A, metric.** Dropping non-open negatives left the test sets about 68% solar, so average precision no
    longer has 0.5 as its chance level (chance is about 0.68) and the pre-set reading (AP >= 0.60) cannot tell
