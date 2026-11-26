@@ -5,27 +5,48 @@ import pandas as pd
 
 REPO = "https://github.com/abboudberoual/alphaearth-airport-solar"
 CSS = """
-body{margin:0;background:#fff;color:#1b2430;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:18px;line-height:1.65}
+body{margin:0;background:#fff;color:#1b2430;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:18px;line-height:1.6}
 a{color:#1557b0}a:hover{color:#0b3a7a}
-.pg{max-width:1040px;margin:0 auto;padding:64px 28px 80px}
-.col{max-width:720px;margin-left:auto;margin-right:auto}
-.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:#56616f;margin:0 0 20px}
-h1{font-size:clamp(34px,5vw,52px);line-height:1.1;letter-spacing:-.02em;margin:0 0 22px;font-weight:600}
-h2{font-size:30px;line-height:1.2;letter-spacing:-.015em;margin:0 0 16px;font-weight:600}
-p{margin:0 0 16px}.lede{font-size:22px;line-height:1.5;color:#3a4553;margin:0}
-section{margin-top:76px}
-.bio{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start;margin-top:8px}
-.bio img{width:168px;height:168px;border-radius:50%;object-fit:cover;flex:0 0 auto}
-.bio div{flex:1 1 380px}.fund{font-size:14.5px;color:#56616f;margin:0}
-figure{margin:36px 0}figure img{width:100%;height:auto;display:block;border-radius:8px}
-figcaption{font-size:15px;line-height:1.55;font-style:italic;color:#56616f;margin:12px auto 0;max-width:720px}
-.box{background:#f6f8fb;border-radius:14px;padding:24px 28px;margin:26px 0 0}
-.box h3{font-size:13px;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#8a5a00;margin:0 0 10px;font-weight:500}
-.box ol,.box ul,.col ul,.col ol{padding-left:1.2em;margin:0}.col li{margin-bottom:8px}
-.so{border-left:0;font-weight:500}
-footer{margin-top:76px;border-top:1px solid #d5dbe3;padding-top:22px;font-size:14.5px;color:#56616f}
+img{max-width:100%;display:block}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 28px;background-size:cover;background-position:center;position:relative}
+.hero::before{content:"";position:absolute;inset:0;background:rgba(14,18,26,.46)}
+.hero h1{position:relative;color:#fff;font-size:clamp(34px,5.4vw,68px);line-height:1.08;letter-spacing:-.02em;font-weight:600;max-width:15em;margin:0;text-shadow:0 2px 28px rgba(0,0,0,.35)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+.sec{padding:104px 0 0}
+.kick{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:#56616f;margin:0 0 14px}
+h2{font-size:clamp(28px,3.4vw,40px);line-height:1.15;letter-spacing:-.02em;font-weight:600;margin:0 0 18px;max-width:18em}
+p{margin:0 0 14px;max-width:34em}.dim{color:#56616f;font-size:15px}
+.shot{border-radius:14px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 22px 48px -22px rgba(16,24,40,.32);width:100%;height:auto}
+.cap{font-size:14.5px;font-style:italic;color:#56616f;margin:14px 0 0;max-width:46em}
+.bio{display:flex;gap:44px;flex-wrap:wrap;align-items:center}
+.bio>img{width:230px;height:230px;border-radius:50%;object-fit:cover;box-shadow:0 22px 48px -22px rgba(16,24,40,.4)}
+.bio>div{flex:1 1 420px}
+.marks{display:flex;gap:30px;align-items:center;flex-wrap:wrap;margin-top:22px}.marks img{height:38px;width:auto}
+.split{display:flex;gap:48px;flex-wrap:wrap;align-items:center}.split>*{flex:1 1 360px;min-width:0}
+.path{position:relative;margin-top:56px;padding-left:64px;border-left:2px dotted #aeb8c5;margin-left:18px}
+.step{position:relative;padding:0 0 84px}.step:last-child{padding-bottom:8px}
+.dot{position:absolute;left:-84px;top:-2px;width:38px;height:38px;border-radius:50%;background:#fff;border:2px solid #1b2430;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:14px}
+.step h3{font-size:24px;letter-spacing:-.01em;font-weight:600;margin:0 0 8px}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:22px}
+.pair figure{margin:0}.pair figcaption{font-size:13.5px;color:#56616f;margin-top:8px;font-family:'IBM Plex Mono',monospace}
+.finds{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:40px;margin-top:40px}
+.finds b{display:block;font-size:44px;line-height:1;letter-spacing:-.03em;font-weight:600;margin-bottom:12px}
+.finds p{font-size:16.5px;margin:0}
+.band{background:#f5f7fa;margin-top:104px;padding:80px 0}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:48px}
+.cols h3{font-size:20px;margin:0 0 12px;font-weight:600}.cols ul,.cols ol{margin:0;padding-left:1.15em;font-size:16.5px}.cols li{margin-bottom:8px}
+.tools{display:flex;gap:44px 56px;flex-wrap:wrap;align-items:center;margin-top:34px}.tools img{height:46px;width:auto}.tools span{font-weight:600;font-size:19px}
+footer{padding:64px 0 80px;font-size:14.5px;color:#56616f}footer p{max-width:60em}
 """
 FONTS = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">'
+
+
+IMG = {"fig1": "fig/fig1_label_efficiency.png", "fig3": "fig/fig3_airport_dulles.png", "me": "img/aboud.jpg",
+       "hero": "img/wide_solar_farm_az.jpg", "dulles": "img/wide_airport_dulles.jpg",
+       "f_m2": "img/farm_406279_y-2.jpg", "f_m1": "img/farm_406279_y-1.jpg", "f_p1": "img/farm_406279_y+1.jpg",
+       "f_emb": "img/farm_406279_emb_y-2.jpg", "nserc": "img/logos/nserc.png", "concordia": "img/logos/concordia.png",
+       "colab": "img/logos/colab.png", "ee": "img/logos/earth-engine.png", "s2logo": "img/logos/sentinel2.png",
+       "usgs": "img/logos/usgs.png", "colabshot": "img/colab_cell.jpg", "s2sat": "img/sentinel2_satellite_esa.jpg"}
 
 
 def numbers(res="results"):
@@ -47,98 +68,127 @@ def numbers(res="results"):
 
 def fragment(n, img):
     """img maps a figure name to its URL. Returns the page body."""
-    return f"""<main class="pg">
-<header class="col">
-<p class="eyebrow">Independent student research &middot; Aboud Beroual, Concordia University</p>
-<h1>Finding land for solar farms near airports, so hydrogen aviation can be truly clean</h1>
-<p class="lede">Hydrogen aircraft are only as clean as the electricity used to make their fuel. I trained a model on satellite data to recognise the kind of land where solar farms get built, then pointed it at the land around 20 US airports.</p>
-</header>
+    return f"""<main>
+<header class="hero" style="background-image:url({img['hero']})"><h1>Finding land for solar farms near airports, so hydrogen aviation can be truly clean</h1></header>
 
-<section class="col">
-<h2>Where this started</h2>
-<div class="bio">
+<section class="sec"><div class="wrap bio">
 <img src="{img['me']}" alt="Aboud Beroual">
 <div>
-<p>In summer 2025 I held an NSERC Undergraduate Student Research Award to study the environmental impact of hydrogen aviation.</p>
-<p class="fund">Background research funded by the Natural Sciences and Engineering Research Council of Canada (NSERC). This follow-up project is my own.</p>
+<p class="kick">Where this started</p>
+<h2>A summer studying how clean hydrogen flight could really be</h2>
+<p>I'm Aboud, an aerospace engineering student at Concordia. In 2025 I held an NSERC undergraduate research award on the environmental impact of hydrogen aviation.</p>
+<p>Hydrogen emits no carbon dioxide in flight, but making it takes a lot of electricity. So I built a dataset of how electricity is produced around the 20 busiest US general-aviation airports, using the US Energy Information Administration's 2025 outlook.</p>
+<div class="marks"><img src="{img['nserc']}" alt="NSERC"><img src="{img['concordia']}" alt="Concordia University"></div>
 </div>
-</div>
-<p style="margin-top:22px"><b>Why hydrogen?</b> Flying is one of the hardest things to clean up, because batteries are too heavy for most aircraft. Hydrogen stores far more energy for its weight and produces no carbon dioxide when used. That makes it one of the few realistic fuels for low-carbon flight.</p>
-<p><b>The catch.</b> Making hydrogen takes a lot of electricity. If that electricity comes from coal or gas, the pollution just moves from the aircraft to the power plant. So my job was to gather reliable data on how electricity is produced in each region, which tells us how clean hydrogen made there would really be.</p>
-<p><b>Why these airports.</b> Hydrogen aircraft are expected to arrive first as smaller regional planes. So we started with the 20 busiest general-aviation airports in the United States (general aviation means flights other than scheduled airlines, such as private, charter and training flights).</p>
-</section>
+</div></section>
 
-<section class="col">
-<h2>What I am trying to do now</h2>
-<p>The earlier work asked how clean the local grid is. This project asks the next question: <b>could an airport make its own clean electricity nearby?</b> The goal is to find land around airports that is suitable for solar farms, so the hydrogen made there is truly clean.</p>
-<p>Checking land by hand is slow. Instead, I taught a computer model what good solar land looks like, using {n['n_farms']} real US solar farms as examples. The model studies how each site looked from space <em>before</em> the farm was built, then searches for similar land near airports.</p>
-<p>The satellite data comes from AlphaEarth, a system from Google DeepMind. It condenses a full year of satellite observations of every 10-metre square of land into 64 numbers, a kind of fingerprint that a computer can compare between places. I also tested ordinary satellite images, to see whether the fingerprint really helps.</p>
-<div class="box"><h3>What this approach assumes</h3><ol>
-<li>Good land for solar farms shares traits a satellite can see, such as being flat, open and unshaded.</li>
-<li>Places where solar farms were built in the past are a fair guide to where they could be built in future.</li>
-<li>Two years before a farm opens, the land still looks the way it did when it was chosen.</li>
-<li>Land within 5 km of an airport is close enough to supply it.</li>
+<section class="sec"><div class="wrap split">
+<div>
+<p class="kick">The question now</p>
+<h2>Could an airport make its own clean power next door?</h2>
+<p>If the local grid is not clean, the hydrogen is not clean either. A solar farm near the airport would fix that, if there is suitable land.</p>
+<p>This project teaches a computer to recognise that kind of land from space.</p>
+</div>
+<figure style="margin:0"><img class="shot" src="{img['dulles']}" alt="Satellite view of Washington Dulles airport and the land around it">
+<figcaption class="cap">Washington Dulles International Airport from space, 2025. Sentinel-2 image.</figcaption></figure>
+</div></section>
+
+<section class="sec"><div class="wrap">
+<p class="kick">How it works</p>
+<h2>Four steps, from past solar farms to land near airports</h2>
+<div class="path">
+
+<div class="step"><span class="dot">1</span>
+<h3>Learn from real solar farms, before they were built</h3>
+<p>{n['n_farms']} US solar farms opened between 2019 and 2024. The model studies each site as it looked two years earlier, when it was still bare land.</p>
+<div class="pair">
+<figure><img class="shot" src="{img['f_m2']}" alt="Satellite image of desert in 2021"><figcaption>2021 &middot; untouched</figcaption></figure>
+<figure><img class="shot" src="{img['f_m1']}" alt="Same site in 2022 with ground cleared"><figcaption>2022 &middot; ground cleared</figcaption></figure>
+<figure><img class="shot" src="{img['f_p1']}" alt="Same site in 2024 covered in solar panels"><figcaption>2024 &middot; operating</figcaption></figure>
+</div>
+<p class="cap">One site in Yuma County, Arizona. White lines mark where the panels were later built.</p>
+</div>
+
+<div class="step"><span class="dot">2</span>
+<h3>Turn each patch of land into a fingerprint</h3>
+<p>AlphaEarth, from Google DeepMind, condenses a year of satellite observations of every 10-metre square into 64 numbers. Similar land gets similar numbers.</p>
+<div class="pair">
+<figure><img class="shot" src="{img['f_m2']}" alt="Ordinary satellite image"><figcaption>What a camera sees</figcaption></figure>
+<figure><img class="shot" src="{img['f_emb']}" alt="False-colour image of three of the 64 AlphaEarth numbers"><figcaption>What the model sees (3 of 64 numbers as colours)</figcaption></figure>
+</div>
+</div>
+
+<div class="step"><span class="dot">3</span>
+<h3>Test it fairly</h3>
+<p>The model had to tell future solar sites from ordinary land nearby, in US states it had never seen. I compared AlphaEarth with ordinary satellite imagery, and published the pass mark before running anything.</p>
+<img class="shot" style="margin-top:22px;box-shadow:none;border:1px solid #e3e7ee" src="{img['fig1']}" alt="Line charts of score against number of training examples for AlphaEarth and Sentinel-2">
+<p class="cap">Score (0.5 is a coin flip, 1.0 is perfect) against the number of examples the model learned from. Left: land seen two years before opening. Right: one year before.</p>
+</div>
+
+<div class="step"><span class="dot">4</span>
+<h3>Point it at the land around airports</h3>
+<p>The trained model scored every 10-metre square within 5 km of each airport.</p>
+<img class="shot" style="margin-top:22px;box-shadow:none;border:1px solid #e3e7ee" src="{img['fig3']}" alt="Washington Dulles airport with the model score overlaid in orange">
+<p class="cap">Darker orange means more similar to land where solar farms were later built. The circle looks flattened because of the map projection.</p>
+</div>
+
+</div>
+</div></section>
+
+<section class="sec"><div class="wrap">
+<p class="kick">What I found</p>
+<h2>It learns fast, but it is not ready to choose sites</h2>
+<div class="finds">
+<div><b>10&times;</b><p>fewer examples needed. AlphaEarth with 100 examples scored {n['ae100']}, about the same as ordinary imagery with 1,000 ({n['s21000']}).</p></div>
+<div><b>{n['ae1000']} &rarr; {n['ae1000_y1']}</b><p>The score jumps when the model sees land one year ahead, not two. By then the ground is often cleared, so it is spotting construction, not good land.</p></div>
+<div><b>{n['recall']}%</b><p>of real solar land found at the confidence a planner would need. Near airports, much of what it highlights is runways and car parks.</p></div>
+</div>
+</div></section>
+
+<section class="band"><div class="wrap cols">
+<div><h3>What this assumes</h3><ol>
+<li>Good solar land shares traits a satellite can see: flat, open, unshaded.</li>
+<li>Where farms were built before is a fair guide to where they could be built.</li>
+<li>Two years before opening, the land still looks as it did when chosen.</li>
+<li>Land within 5 km is close enough to supply the airport.</li>
 </ol></div>
-</section>
+<div><h3>What it cannot see</h3><ul>
+<li>Power lines, zoning, ownership and price.</li>
+<li>Real land is almost all ordinary, so real-world accuracy would be lower than in the test.</li>
+<li>These {n['n_air']} airports are mostly surrounded by city.</li>
+</ul></div>
+<div><h3>What comes next</h3><ul>
+<li>Remove runways, buildings, water and existing farms before scoring.</li>
+<li>Add distance to power lines, slope and protected areas.</li>
+<li>Score every US general-aviation airport.</li>
+<li>Convert usable land into megawatts and kilograms of hydrogen.</li>
+</ul></div>
+</div></section>
 
-<figure><img src="{img['fig2']}" alt="Three satellite images of the same site in Arizona in 2021, 2022 and 2024, showing open desert, then cleared ground, then solar panels">
-<figcaption>Figure 1. One of the solar farms the model learned from (Yuma County, Arizona; opened 2023), seen by the Sentinel-2 satellite. White lines mark where the panels were later built. Two years before opening the land is untouched. One year before, the ground has already been cleared.</figcaption></figure>
+<section class="sec"><div class="wrap split">
+<div>
+<p class="kick">Tools and data</p>
+<h2>Built with open data and free tools</h2>
+<div class="tools">
+<img src="{img['colab']}" alt="Google Colab"><img src="{img['ee']}" alt="Google Earth Engine" style="height:30px"><span>AlphaEarth Foundations</span><img src="{img['s2logo']}" alt="Copernicus Sentinel-2" style="height:72px"><img src="{img['usgs']}" alt="USGS">
+</div>
+<img class="shot" style="margin-top:36px" src="{img['colabshot']}" alt="Three lines of Python in Google Colab that run the whole pipeline">
+<p class="cap">The whole study runs from three calls in a Colab notebook.</p>
+</div>
+<figure style="margin:0"><img class="shot" src="{img['s2sat']}" alt="Illustration of the Sentinel-2 satellite imaging the Earth in several colour bands">
+<figcaption class="cap">Sentinel-2 photographs the same ground every five days in 13 colour bands. Illustration: ESA.</figcaption></figure>
+</div></section>
 
-<section class="col">
-<h2>How I tested it</h2>
-<p>For each solar farm, the model was also shown ordinary land 2 to 20 km away, {n['n_px']} sample points in all. Its task was to tell the two apart.</p>
-<p>To keep the exam fair, the model was always tested on US states it had never seen. I also wrote down what would count as success and published it before training anything.</p>
-<p>The score used below runs from 0.5 (no better than a coin flip) to 1.0 (every future solar site ranked above every piece of ordinary land).</p>
-</section>
-
-<figure><img src="{img['fig1']}" alt="Two line charts of score against number of training examples for AlphaEarth and ordinary Sentinel-2 imagery">
-<figcaption>Figure 2. The score of each approach against the number of examples the model learned from. Error bars show the spread over 5 random draws. Left: land seen two years before the farm opened. Right: one year before.</figcaption></figure>
-
-<section class="col">
-<h2>What I found</h2>
-<p><b>The fingerprint learns faster.</b> Given the same number of examples, AlphaEarth beat ordinary imagery at every size from 50 examples up. With only 100 examples it scored {n['ae100']}, about the same as ordinary imagery with 1,000 ({n['s21000']}); the small gap is within the noise. That matters because labelled examples are the expensive part of this kind of work.</p>
-<p><b>Timing can fool the model.</b> Shown land one year before opening, every score jumps (up to {n['ae1000_y1']}). Figure 1 shows why: by then the ground is often already cleared, so the model is partly spotting construction, not good land. Seen two years ahead, the best score is {n['ae1000']}.</p>
-<p><b>It is not ready to choose sites.</b> At the confidence a planner would want (95% of flagged land correct in testing), the model finds only {n['recall']}% of real solar land. It can narrow a search. It cannot yet make the decision.</p>
-</section>
-
-<figure><img src="{img['fig3']}" alt="Satellite image of Washington Dulles airport beside the same image with the model's score overlaid in orange">
-<figcaption>Figure 3. Land within 5 km of Washington Dulles International Airport in 2025 (left) and the model's score for it (right). Darker orange means more similar to land where solar farms were later built. The circle looks slightly flattened because of the map projection.</figcaption></figure>
-
-<section class="col">
-<h2>What the model sees near an airport</h2>
-<p>The model picks out flat, open, cleared ground. That is what solar land looks like from space, but here it includes the runways and taxiways themselves, along with car parks and building sites.</p>
-<p>At the 95% confidence level, the largest area it flagged near any of the {n['n_air']} airports was {n['max_km2']} km&sup2; ({n['top_air']}). Before its map is useful, the model needs to know which land is actually available.</p>
-</section>
-
-<section class="col">
-<h2>Limits</h2>
-<ul>
-<li>Looking like land that was built on is not the same as being buildable. Power-line access, zoning, ownership and price cannot be seen from space.</li>
-<li>The test used equal numbers of solar and ordinary sites. Real land is almost all ordinary, so real-world accuracy would be lower.</li>
-<li>These {n['n_air']} airports are busy and mostly surrounded by city.</li>
-</ul>
-</section>
-
-<section class="col">
-<h2>What comes next</h2>
-<ul>
-<li>Remove land that cannot be used (runways, buildings, water, existing solar farms) before scoring.</li>
-<li>Add what satellites cannot see: distance to power lines, slope and protected areas.</li>
-<li>Score every US general-aviation airport, not just {n['n_air']}.</li>
-<li>Convert usable land into megawatts of solar power and kilograms of hydrogen per day.</li>
-</ul>
-</section>
-
-<footer class="col">
+<footer><div class="wrap">
 <p><a href="{REPO}">Code, data and every number on this page</a> &middot; <a href="{REPO}/blob/main/HYPOTHESIS.md">The plan published before the experiment</a> &middot; <a href="{REPO}/tree/main/docs/fig">Figures as PDF</a></p>
-<p>Data: AlphaEarth Foundations Satellite Embedding dataset (Google / Google DeepMind) via Google Earth Engine; USPVDB (U.S. Geological Survey and Lawrence Berkeley National Laboratory); contains modified Copernicus Sentinel data (2017&ndash;2025); ESA WorldCover. This is personal student work. It is not affiliated with or endorsed by any of these organisations or by NSERC.</p>
-</footer>
+<p>Data: AlphaEarth Foundations Satellite Embedding dataset (Google / Google DeepMind) via Google Earth Engine; USPVDB (U.S. Geological Survey and Lawrence Berkeley National Laboratory); contains modified Copernicus Sentinel data (2017&ndash;2025); ESA WorldCover; U.S. EIA Annual Energy Outlook 2025. Logos belong to their owners and are shown only to credit the tools and funders. This is personal student work, not affiliated with or endorsed by any of these organisations.</p>
+</div></footer>
 </main>"""
 
 
 def build(res="results", out="docs/index.html"):
     n = numbers(res)
-    img = {"fig1": "fig/fig1_label_efficiency.png", "fig2": "fig/fig2_site_over_time.png", "fig3": "fig/fig3_airport_dulles.png", "me": "img/aboud.jpg"}
+    img = IMG
     html = ("<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
             "<title>Finding land for solar farms near airports, so hydrogen aviation can be truly clean</title>\n"
